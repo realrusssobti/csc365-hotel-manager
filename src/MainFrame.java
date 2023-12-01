@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 public class MainFrame extends Frame {
 
@@ -14,40 +15,42 @@ public class MainFrame extends Frame {
         setLayout(new BorderLayout());
 
         // Create buttons
-        Button button1 = new Button("Open Frame 1");
-        Button button2 = new Button("Open Frame 2");
+        Button analyticsButton = new Button("Analytics Screen");
+        Button roomStatusButton = new Button("Room Status");
 
         // Add button action listeners
-        button1.addActionListener(new ActionListener() {
+        analyticsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cardLayout.show(cardPanel, "Frame 1");
+                cardLayout.show(cardPanel, "Analytics");
             }
         });
 
-        button2.addActionListener(new ActionListener() {
+        roomStatusButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cardLayout.show(cardPanel, "Frame 2");
+                cardLayout.show(cardPanel, "RoomStatus");
             }
         });
 
         // Create panels for each "frame"
-        AnalyticsScreen frame1Panel = new AnalyticsScreen();
-        mainDashboard frame2Panel = new mainDashboard();
+        AnalyticsScreen analyticsPanel = new AnalyticsScreen();
+        ArrayList<Room> rooms = new ArrayList<>();
+        ArrayList<Reservation> reservations = new ArrayList<>();
+        MainDashboard roomStatusPanel = new MainDashboard(rooms, reservations);
 
         // Create card layout and panel
         cardLayout = new CardLayout();
         cardPanel = new Panel(cardLayout);
 
         // Add panels to the cardPanel
-        cardPanel.add(frame1Panel, "Frame 1");
-        cardPanel.add(frame2Panel, "Frame 2");
+        cardPanel.add(analyticsPanel, "Analytics");
+        cardPanel.add(roomStatusPanel, "RoomStatus");
 
         // Add buttons to the main frame using FlowLayout
         Panel buttonPanel = new Panel(new FlowLayout());
-        buttonPanel.add(button1);
-        buttonPanel.add(button2);
+        buttonPanel.add(analyticsButton);
+        buttonPanel.add(roomStatusButton);
 
         // Add components to the main frame
         add(buttonPanel, BorderLayout.NORTH);
