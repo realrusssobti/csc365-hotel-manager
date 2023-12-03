@@ -7,8 +7,10 @@ public class ReservationPanel extends Panel {
     private final TextField reservationIDField;
     private final TextField customerIDField;
     private final TextField roomIDField;
-    private final TextField checkInDateField;
-    private final TextField checkOutDateField;
+    private String checkInDate;
+    private Panel CheckInDatePanel;
+    private String checkOutDate;
+    private Panel CheckOutDatePanel;
 
     public ReservationPanel() {
         setLayout(new GridLayout(6, 2));
@@ -23,10 +25,10 @@ public class ReservationPanel extends Panel {
         roomIDField = new TextField();
 
         Label checkInLabel = new Label("Check-In Date (yyyy-MM-dd):");
-        checkInDateField = new TextField();
+        CheckInDatePanel = new DatePicker();
 
         Label checkOutLabel = new Label("Check-Out Date (yyyy-MM-dd):");
-        checkOutDateField = new TextField();
+        CheckOutDatePanel = new DatePicker();
 
         Button makeReservationButton = new Button("Make Reservation");
         makeReservationButton.addActionListener(new ReservationButtonListener());
@@ -41,10 +43,10 @@ public class ReservationPanel extends Panel {
         add(roomIDField);
 
         add(checkInLabel);
-        add(checkInDateField);
+        add(CheckInDatePanel);
 
         add(checkOutLabel);
-        add(checkOutDateField);
+        add(CheckOutDatePanel);
 
         add(makeReservationButton);
     }
@@ -57,11 +59,19 @@ public class ReservationPanel extends Panel {
                 int customerID = Integer.parseInt(customerIDField.getText());
                 int roomID = Integer.parseInt(roomIDField.getText());
 
-                Date checkInDate = new Date(checkInDateField.getText());
-                Date checkOutDate = new Date(checkOutDateField.getText());
+//                Date checkInDate = new Date(checkInDateField.getText());
+//                Date checkOutDate = new Date(checkOutDateField.getText());
+                String checkInDate = ((DatePicker) CheckInDatePanel).getSelectedDate();
+                String checkOutDate = ((DatePicker) CheckOutDatePanel).getSelectedDate();
+                // replace the - with /
+                checkInDate = checkInDate.replace("-", "/");
+                checkOutDate = checkOutDate.replace("-", "/");
+
+
+
 
                 // Create a new Reservation object with the input data
-                Reservation newReservation = new Reservation(reservationID, customerID, roomID, checkInDate, checkOutDate);
+                Reservation newReservation = new Reservation(reservationID, customerID, roomID, new Date(checkInDate), new Date(checkOutDate));
 
                 // Perform operations with the new reservation (e.g., save to database)
                 // For demonstration purposes, you can print the new reservation details

@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,6 +39,14 @@ public class MainFrame extends Frame {
                 ;
             }
         });
+        reservationButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Reservation button clicked!");
+                showPopup(cardPanel, new ReservationPanel());
+                ;
+            }
+        });
 
         // Create panels for each "frame"
         /* TODO: Replace this with a getData function and query */
@@ -57,6 +66,7 @@ public class MainFrame extends Frame {
         }
         AnalyticsScreen analyticsPanel = new AnalyticsScreen();
         RoomPanel roomStatusPanel = new RoomPanel(rooms, reservations);
+        ReservationPanel reservationPanel = new ReservationPanel();
 
         // Create card layout and panel
         cardLayout = new CardLayout();
@@ -66,6 +76,7 @@ public class MainFrame extends Frame {
         cardPanel.add(roomStatusPanel, "RoomStatus");
 
         cardPanel.add(analyticsPanel, "Analytics");
+        cardPanel.add(reservationPanel, "Reservation");
 
 
         // Add buttons to the main frame using FlowLayout
@@ -93,6 +104,22 @@ public class MainFrame extends Frame {
             }
         });
 
+    }
+    private static void showPopup(Component parentComponent, Component popupComponent) {
+        // Create a JDialog as the pop-up
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(parentComponent), "Popup", true);
+
+        // Create your panel (replace with your own panel class)
+        JPanel popupPanel = new JPanel();
+        popupPanel.add(popupComponent);
+
+        // Add the panel to the dialog
+        dialog.getContentPane().add(popupPanel);
+
+        // Set the size and show the dialog
+        dialog.setSize(200, 150);
+        dialog.setLocationRelativeTo(parentComponent);
+        dialog.setVisible(true);
     }
 
 
