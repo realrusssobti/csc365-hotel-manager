@@ -1,4 +1,6 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 public class PopulateTables {
@@ -14,8 +16,15 @@ public class PopulateTables {
         ArrayList<Reservation> reservations = new ArrayList<>();
 
 
-        // Reservation reservation_1 = new Reservation(reservation_counter, );
-        // reservation_counter++;
+        //can move this into a function but for now just here for creating 1 reservation
+        int customer_id = generate_random_num(0, guest_counter - 1);
+        int room_id = generate_random_num(0, room_counter - 1);
+        LocalDate checkin_date = LocalDate.of(2014, 1, 1);
+        LocalDate checkout_date = LocalDate.of(2014, 1, 20);
+
+        //change "Date" in reservation to "LocalDate" since Date constructor is deprecated
+        Reservation reservation_1 = new Reservation(reservation_counter, 1, 101, checkin_date, checkout_date);
+        reservation_counter++;
     }
 
     public static ArrayList<Room> generateRooms(int num_suites, int num_reg, int num_basic){
