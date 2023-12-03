@@ -5,13 +5,17 @@ public class PopulateTables {
 
     public static int room_counter = 100;
     public static int guest_counter = 0;
+    public static int reservation_counter = 0;
     public static void main (String[]args){
         ArrayList<Room> rooms = generateRooms(10, 50, 40);
-        for (Room room: rooms){
-
-        }
 
         ArrayList<Guest> guests = generateGuests(80);
+
+        ArrayList<Reservation> reservations = new ArrayList<>();
+
+
+        // Reservation reservation_1 = new Reservation(reservation_counter, );
+        // reservation_counter++;
     }
 
     public static ArrayList<Room> generateRooms(int num_suites, int num_reg, int num_basic){

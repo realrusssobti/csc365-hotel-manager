@@ -16,8 +16,12 @@ public class MainFrame extends Frame {
         setLayout(new BorderLayout());
 
         // Create buttons
-        Button analyticsButton = new Button("Analytics Screen");
+        Button analyticsButton = new Button("Test Shit Here Screen");
         Button roomStatusButton = new Button("Room Status");
+        Button reservationButton = new Button("Reservation Screen");
+        Button roomKeyButton = new Button("Room Key Screen");
+        Button billingButton = new Button("Billing Screen");
+        Button checkInOutButton = new Button("Check In/Out Screen");
 
         // Add button action listeners
         analyticsButton.addActionListener(new ActionListener() {
@@ -26,17 +30,17 @@ public class MainFrame extends Frame {
                 cardLayout.show(cardPanel, "Analytics");
             }
         });
-
         roomStatusButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Room Status button clicked!");
                 cardLayout.show(cardPanel, "RoomStatus");
+                ;
             }
         });
 
         // Create panels for each "frame"
-//        ArrayList<Reservation> reservations = new ArrayList<>();
+        /* TODO: Replace this with a getData function and query */
                 Room[] roomsList = {new Room(1, 101, "Single", 100.0),
                 new Room(2, 102, "Double", 150.0),
                 new Room(3, 103, "Suite", 200.0)};
@@ -68,6 +72,10 @@ public class MainFrame extends Frame {
         Panel buttonPanel = new Panel(new FlowLayout());
         buttonPanel.add(analyticsButton);
         buttonPanel.add(roomStatusButton);
+        buttonPanel.add(reservationButton);
+        buttonPanel.add(roomKeyButton);
+        buttonPanel.add(billingButton);
+        buttonPanel.add(checkInOutButton);
 
         // Add components to the main frame
         add(buttonPanel, BorderLayout.NORTH);
@@ -75,16 +83,18 @@ public class MainFrame extends Frame {
 
         // Set main frame properties
         setTitle("Main Frame");
-        setSize(400, 300);
+        setSize(1600, 900);
         setVisible(true);
-        setResizable(false);
+        setResizable(true);
         // listen and close the frame
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
         });
+
     }
+
 
     public static void main(String[] args) {
         EventQueue.invokeLater(MainFrame::new);
