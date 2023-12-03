@@ -15,7 +15,7 @@ public class DatabaseFunctions {
     public User login(String username, String password){
         String query = "SELECT * FROM User WHERE username = ? AND password = ?";
         try {
-            // create the mysql insert preparedstatement
+            // create the mysql insert prepared statement
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
