@@ -1,39 +1,51 @@
 -- Hotel Database Project --
 CREATE TABLE Guest (
-                          CustomerID INT NOT NULL AUTO_INCREMENT,
-                          FirstName VARCHAR(50) NOT NULL,
-                          LastName VARCHAR(50) NOT NULL,
-                          Email VARCHAR(50) NOT NULL,
-                          Phone VARCHAR(50) NOT NULL,
-                          Address VARCHAR(50) NOT NULL,
-                          City VARCHAR(50) NOT NULL,
-                          State VARCHAR(50) NOT NULL,
-                          Zip VARCHAR(50) NOT NULL,
-                          PRIMARY KEY (CustomerID)
+                            GuestID INT NOT NULL AUTO_INCREMENT,
+                            FirstName VARCHAR(50) NOT NULL,
+                            LastName VARCHAR(50) NOT NULL,
+                            Email VARCHAR(50) NOT NULL,
+                            Phone VARCHAR(50) NOT NULL,
+                            Addr VARCHAR(50) NOT NULL,
+                            City VARCHAR(50) NOT NULL,
+                            St VARCHAR(50) NOT NULL,
+                            Zip VARCHAR(50) NOT NULL,
+                            PRIMARY KEY (GuestID)
 );
 
 CREATE TABLE Room (
-                      RoomID INT NOT NULL AUTO_INCREMENT,
-                      RoomNumber INT NOT NULL,
-                      RoomType VARCHAR(50) NOT NULL,
-                      RoomPrice DECIMAL(10,2) NOT NULL,
-                      PRIMARY KEY (RoomID)
+                            RoomNumber INT NOT NULL,
+                            RoomType VARCHAR(50) NOT NULL,
+                            RoomPrice DECIMAL(10,2) NOT NULL,
+                            PRIMARY KEY (RoomNumber)
 );
 
-CREATE TABLE Reservation (
-                             ReservationID INT NOT NULL AUTO_INCREMENT,
-                             CustomerID INT NOT NULL,
-                             RoomID INT NOT NULL,
-                             CheckInDate DATE NOT NULL,
-                             CheckOutDate DATE NOT NULL,
-                             PRIMARY KEY (ReservationID),
-                             FOREIGN KEY (CustomerID) REFERENCES Guest(CustomerID),
-                             FOREIGN KEY (RoomID) REFERENCES Room(RoomID)
+CREATE TABLE Booking (
+                            BookingID INT NOT NULL AUTO_INCREMENT,
+                            GuestID INT NOT NULL,
+                            RoomNumber INT NOT NULL,
+                            CheckInDate DATE NOT NULL,
+                            CheckOutDate DATE NOT NULL,
+                            CheckedIn BOOLEAN DEFAULT false,
+                            PRIMARY KEY (BookingID),
+                            FOREIGN KEY (GuestID) REFERENCES Guest(GuestID),
+                            FOREIGN KEY (RoomNumber) REFERENCES Room(RoomNumber)
 );
 
-CREATE TABLE User (
-                      UserID INT NOT NULL AUTO_INCREMENT,
-                      Username VARCHAR(50) NOT NULL,
-                      Password VARCHAR(50) NOT NULL,
-                      PRIMARY KEY (UserID)
+CREATE TABLE Receipt (
+                            ReceiptID INT NOT NULL AUTO_INCREMENT,
+                            GuestID INT NOT NULL,
+                            BookingID INT NOT NULL,
+                            ReceiptDate DATE NOT NULL,
+                            TotalAmount DECIMAL(10,2) NOT NULL,
+                            PRIMARY KEY (ReceiptID),
+                            FOREIGN KEY (GuestID) REFERENCES Guest(GuestID),
+                            FOREIGN KEY (BookingID) REFERENCES Booking(BookingID)
+);
+
+CREATE TABLE RoomKey (
+                            RoomKeyID INT NOT NULL AUTO_INCREMENT,
+                            RoomNumber INT NOT NULL,
+                            Active BOOLEAN DEFAULT false,
+                            PRIMARY KEY (KeyID),
+                            FOREIGN KEY (RoomNumber) REFERENCES Room(RoomNumber)
 );
