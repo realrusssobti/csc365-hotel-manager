@@ -23,7 +23,7 @@ CREATE TABLE RoomKey (
                             RoomKeyID INT NOT NULL AUTO_INCREMENT,
                             RoomNumber INT NOT NULL,
                             Expiration DATE NOT NULL,
-                            PRIMARY KEY (KeyID),
+                            PRIMARY KEY (RoomKeyID),
                             FOREIGN KEY (RoomNumber) REFERENCES Room(RoomNumber)
 );
 

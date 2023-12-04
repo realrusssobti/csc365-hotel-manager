@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,62 +7,27 @@ public class BillCustomerPanel extends Panel {
     private final Choice reservationChoice;
 
     public BillCustomerPanel() {
-        // Set the layout manager to GridBagLayout
-        setLayout(new GridBagLayout());
+        setLayout(new GridLayout(4, 2));
 
-        // Add a title label
-        JLabel titleLabel = new JLabel("Billings");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Set font and style
-        GridBagConstraints titleConstraints = new GridBagConstraints();
-        titleConstraints.gridx = 0;
-        titleConstraints.gridy = 0;
-        titleConstraints.insets = new Insets(10, 0, 20, 0); // Padding: top, left, bottom, right
-        add(titleLabel, titleConstraints);
-
-        // Create a panel for the "Select Customer" components
-        Panel customerPanel = new Panel(new GridLayout(1, 2));
         Label customerLabel = new Label("Select Customer:");
         customerChoice = createCustomerChoice();
-        customerPanel.add(customerLabel);
-        customerPanel.add(customerChoice);
 
-        // Create a panel for the "Select Reservation" components
-        Panel reservationPanel = new Panel(new GridLayout(1, 2));
         Label reservationLabel = new Label("Select Reservation:");
         reservationChoice = createReservationChoice();
-        reservationPanel.add(reservationLabel);
-        reservationPanel.add(reservationChoice);
 
-        // Create GridBagConstraints for the customerPanel
-        GridBagConstraints customerPanelConstraints = new GridBagConstraints();
-        customerPanelConstraints.gridx = 0;
-        customerPanelConstraints.gridy = 1;
-        customerPanelConstraints.insets = new Insets(0, 0, 10, 0); // Padding: top, left, bottom, right
-        add(customerPanel, customerPanelConstraints);
-
-        // Create GridBagConstraints for the reservationPanel
-        GridBagConstraints reservationPanelConstraints = new GridBagConstraints();
-        reservationPanelConstraints.gridx = 0;
-        reservationPanelConstraints.gridy = 2;
-        reservationPanelConstraints.insets = new Insets(10, 0, 10, 0); // Padding: top, left, bottom, right
-        add(reservationPanel, reservationPanelConstraints);
-
-        JButton generateBillButton = new JButton("Generate Bill");
+        Button generateBillButton = new Button("Generate Bill");
         generateBillButton.addActionListener(new GenerateBillButtonListener());
 
-        // Customize the button appearance
-        generateBillButton.setForeground(Color.WHITE);
-        generateBillButton.setBackground(new Color(59, 89, 182)); // Adjust color as needed
-        generateBillButton.setFocusPainted(false);
-        generateBillButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Add padding
+        add(customerLabel);
+        add(customerChoice);
 
-        // Create GridBagConstraints for the "Generate Bill" button
-        GridBagConstraints buttonConstraints = new GridBagConstraints();
-        buttonConstraints.gridx = 0;
-        buttonConstraints.gridy = 3;
-        buttonConstraints.weightx = 0.67; // 2/3 of the horizontal space
-        buttonConstraints.insets = new Insets(10, 0, 10, 0); // Padding: top, left, bottom, right
-        add(generateBillButton, buttonConstraints);
+        add(reservationLabel);
+        add(reservationChoice);
+
+        add(new Label()); // Empty label for spacing
+        add(new Label());
+
+        add(generateBillButton);
     }
 
     private Choice createCustomerChoice() {
@@ -94,20 +58,31 @@ public class BillCustomerPanel extends Panel {
 
             // Here, you can perform any additional logic to generate the bill
             // For simplicity, let's just display the information for now
-            showMessageDialog("Generating bill for Customer: " + selectedCustomer
-                    + "\nReservation Number: " + selectedReservation
-                    + "\nBill Generated!");
+            BillFrame popup = new BillFrame(selectedCustomer, selectedReservation);
+            popup.setVisible(true);
         }
     }
 
     private void showMessageDialog(String message) {
-        JOptionPane.showMessageDialog(this, message, "Message", JOptionPane.INFORMATION_MESSAGE);
+        Dialog dialog = new Dialog((Frame) getParent(), "Message", true);
+        dialog.setLayout(new FlowLayout());
+        dialog.add(new Label(message));
+        Button okButton = new Button("OK");
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+            }
+        });
+        dialog.add(okButton);
+        dialog.setSize(200, 100);
+        dialog.setLocationRelativeTo((Frame) getParent());
+        dialog.setVisible(true);
     }
 
     public static void main(String[] args) {
         Frame frame = new Frame("Bill Customer Panel");
         frame.add(new BillCustomerPanel());
-        frame.setSize(300, 250);
+        frame.setSize(300, 200);
         frame.setVisible(true);
     }
 }

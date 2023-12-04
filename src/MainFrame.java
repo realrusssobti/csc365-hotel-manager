@@ -17,7 +17,6 @@ public class MainFrame extends Frame {
         setLayout(new BorderLayout());
 
         // Create buttons
-        Button analyticsButton = new Button("Test Shit Here Screen");
         Button roomStatusButton = new Button("Room Status");
         Button reservationButton = new Button("Reservation Screen");
         Button roomKeyButton = new Button("Room Key Screen");
@@ -26,12 +25,7 @@ public class MainFrame extends Frame {
         Button customerManagerButton = new Button("Manage Customers");
 
         // Add button action listeners
-        analyticsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(cardPanel, "Analytics");
-            }
-        });
+
         customerManagerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -104,6 +98,7 @@ public class MainFrame extends Frame {
         CheckInOutPanel checkInOutPanel = new CheckInOutPanel();
         BillCustomerPanel billCustomerPanel = new BillCustomerPanel();
         CustomerManager customerManagerPanel = new CustomerManager();
+        HotelSplashScreen hotelSplashScreen = new HotelSplashScreen();
 
 
         // Create card layout and panel
@@ -111,6 +106,7 @@ public class MainFrame extends Frame {
         cardPanel = new Panel(cardLayout);
 
         // Add panels to the cardPanel
+        cardPanel.add(hotelSplashScreen, "SplashScreen");
         cardPanel.add(roomStatusPanel, "RoomStatus");
 
         cardPanel.add(analyticsPanel, "Analytics");
@@ -123,7 +119,6 @@ public class MainFrame extends Frame {
 
         // Add buttons to the main frame using FlowLayout
         Panel buttonPanel = new Panel(new FlowLayout());
-        buttonPanel.add(analyticsButton);
         buttonPanel.add(roomStatusButton);
         buttonPanel.add(reservationButton);
         buttonPanel.add(roomKeyButton);
@@ -166,12 +161,7 @@ public class MainFrame extends Frame {
 
 
     public static void main(String[] args) {
-        // set up flatlaf look and feel if not on mac
-        try {
-            if(!System.getProperty("os.name").toLowerCase().contains("mac"))  UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-        } catch (Exception e) {
-            System.err.println("Failed to initialize LaF");
-        }
+
 
         EventQueue.invokeLater(MainFrame::new);
     }
