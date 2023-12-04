@@ -65,6 +65,15 @@ public class MainFrame extends Frame {
             }
         });
 
+        billingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Billing button clicked!");
+                cardLayout.show(cardPanel, "BillCustomer");
+                ;
+            }
+        });
+
         // Create panels for each "frame"
         /* TODO: Replace this with a getData function and query */
                 Room[] roomsList = {new Room(1, 101, "Single", 100.0),
@@ -86,6 +95,7 @@ public class MainFrame extends Frame {
         ReservationPanel reservationPanel = new ReservationPanel();
         RoomKeyPanel roomKeyPanel = new RoomKeyPanel();
         CheckInOutPanel checkInOutPanel = new CheckInOutPanel();
+        BillCustomerPanel billCustomerPanel = new BillCustomerPanel();
 
 
         // Create card layout and panel
@@ -99,6 +109,7 @@ public class MainFrame extends Frame {
         cardPanel.add(reservationPanel, "Reservation");
         cardPanel.add(roomKeyPanel, "RoomKey");
         cardPanel.add(checkInOutPanel, "CheckInOut");
+        cardPanel.add(billCustomerPanel, "BillCustomer");
 
 
         // Add buttons to the main frame using FlowLayout
