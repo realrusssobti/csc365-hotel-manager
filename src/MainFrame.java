@@ -56,6 +56,14 @@ public class MainFrame extends Frame {
                 ;
             }
         });
+        checkInOutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Check IN/OUT button clicked!");
+                cardLayout.show(cardPanel, "CheckInOut");
+                ;
+            }
+        });
 
         // Create panels for each "frame"
         /* TODO: Replace this with a getData function and query */
@@ -77,6 +85,7 @@ public class MainFrame extends Frame {
         RoomPanel roomStatusPanel = new RoomPanel(rooms, reservations);
         ReservationPanel reservationPanel = new ReservationPanel();
         RoomKeyPanel roomKeyPanel = new RoomKeyPanel();
+        CheckInOutPanel checkInOutPanel = new CheckInOutPanel();
 
 
         // Create card layout and panel
@@ -89,6 +98,7 @@ public class MainFrame extends Frame {
         cardPanel.add(analyticsPanel, "Analytics");
         cardPanel.add(reservationPanel, "Reservation");
         cardPanel.add(roomKeyPanel, "RoomKey");
+        cardPanel.add(checkInOutPanel, "CheckInOut");
 
 
         // Add buttons to the main frame using FlowLayout
