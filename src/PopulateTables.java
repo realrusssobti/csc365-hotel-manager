@@ -12,16 +12,28 @@ public class PopulateTables {
     public static int room_counter = 100;
     public static int guest_counter = 0;
     public static int reservation_counter = 0;
+    private static Connection connection;
     public static void main (String[]args){
 
+
         try{
-         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/your_database_name", "root", "your_password");}
+         connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/your_database_name", "root", "your_password");}
             catch (SQLException e) {
                 e.printStackTrace();
             }
 
+        //generate the rooms and add them calling the addRoom function
         ArrayList<Room> rooms = generateRooms(10, 50, 40);
+        for (Room room : rooms){
+            addRoom(room, connection);
+        }
+
+        //generate guests and add them calling addGuests
         ArrayList<Guest> guests = generateGuests(80);
+        for (Guest guest : guests){
+            addGuest(guest, connection);
+        }
+
         ArrayList<Reservation> reservations = new ArrayList<>();
 
 
@@ -31,7 +43,6 @@ public class PopulateTables {
         LocalDate checkin_date = LocalDate.of(2014, 1, 1);
         LocalDate checkout_date = LocalDate.of(2014, 1, 20);
 
-        //change "Date" in reservation to "LocalDate" since Date constructor is deprecated
         Reservation reservation_1 = new Reservation(reservation_counter, 1, 101, checkin_date, checkout_date);
         reservation_counter++;
     }
@@ -84,7 +95,7 @@ public class PopulateTables {
         return guests;
     }
 
-    public void addGuest(Guest guest, Connection connection){
+    public static void addGuest(Guest guest, Connection connection){
         try{
             String query = "INSERT INTO Guest (firstName, lastName, email, phone, address, city, state, zip) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
@@ -103,7 +114,7 @@ public class PopulateTables {
         }
     }
 
-    public void addRoom(Room room, Connection connection){
+    public static void addRoom(Room room, Connection connection){
         try{
             String query = "INSERT INTO Room (roomNumber, roomType, roomPrice) VALUES (?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
