@@ -13,7 +13,7 @@ public class MainFrame extends Frame {
 
     private CardLayout cardLayout;
     private Panel cardPanel;
-    private static SQLQueries sqlConnection;
+    private static SQLQueries sqlConnection = new SQLQueries();
 
     public MainFrame() {
         // Set layout manager for the main frame

@@ -7,6 +7,9 @@ import java.sql.ResultSet;
 import java.sql.Date;
 import java.util.*;
 
+// import mySQL
+import java.sql.*;
+
 /* Finished queries for
  * getting all reservations & getting a reservation by start/end dates
  * getting room info for room status
@@ -18,7 +21,7 @@ public class SQLQueries {
 
     public SQLQueries() {
         try{
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/your_database_name", "root", "your_password");
+            connection = DriverManager.getConnection("jdbc:mysql://ambari-node5.csc.calpoly.edu:3306","rsobti","28103315");
             System.out.println("Database connection opened.");
            }
            catch (SQLException e) {
