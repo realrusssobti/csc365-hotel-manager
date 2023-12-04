@@ -18,6 +18,8 @@ public class PopulateTables {
 
         try{
             connection = DriverManager.getConnection("jdbc:mysql://ambari-node5.csc.calpoly.edu:3306","rsobti","28103315");
+            // Use RSOBTI
+            connection.createStatement().execute("USE rsobti");
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -102,7 +104,7 @@ public class PopulateTables {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, guest.getFirstName());
             statement.setString(2, guest.getLastName());
-            statement.setString(1, guest.getEmail());
+            statement.setString(3, guest.getEmail());
             statement.setString(4, guest.getPhone());
             statement.setString(5, guest.getAddress());
             statement.setString(6, guest.getCity());
