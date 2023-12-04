@@ -3,6 +3,7 @@ public class Room {
     private int roomNumber;
     private String roomType;
     private double roomPrice;
+    
 
     public Room(int roomID, int roomNumber, String roomType, double roomPrice) {
         this.roomID = roomID;

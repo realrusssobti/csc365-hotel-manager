@@ -47,7 +47,7 @@ public class RoomPanel extends Panel {
         public void actionPerformed(ActionEvent e) {
 
             System.out.println("Room " + room.getRoomNumber() + " clicked!");
-            RoomStatusPopup popup = new RoomStatusPopup("Room 123", false, 3, "John Doe", "2023-12-15");
+            RoomStatusPopup popup = new RoomStatusPopup(String.valueOf(room.getRoomNumber()), false, 3, "John Doe", "2023-12-15");
             popup.setSize(300, 500);
             popup.setVisible(true);
         }
