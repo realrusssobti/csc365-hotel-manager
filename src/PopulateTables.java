@@ -53,21 +53,21 @@ public class PopulateTables {
 
         for (int i=0; i<num_basic; i++){
             int price = 70;
-            Room rm = new Room(room_counter, room_counter, "Basic", price);
+            Room rm = new Room(room_counter, "Basic", price);
             rooms.add(rm);
             room_counter++;
         }
 
         for (int i=0; i<num_reg; i++){
             int price = 120;
-            Room rm = new Room(room_counter, room_counter, "Regular", price);
+            Room rm = new Room(room_counter, "Regular", price);
             rooms.add(rm);
             room_counter++;
         }
 
         for (int i=0; i<num_suites; i++){
             int price = 180;
-            Room rm = new Room(room_counter, room_counter, "Suite", price);
+            Room rm = new Room(room_counter, "Suite", price);
             rooms.add(rm);
             room_counter++;
         }

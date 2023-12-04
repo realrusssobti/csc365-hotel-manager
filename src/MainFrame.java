@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -11,6 +12,7 @@ public class MainFrame extends Frame {
 
     private CardLayout cardLayout;
     private Panel cardPanel;
+    private static Connection connection;
 
     public MainFrame() {
         // Set layout manager for the main frame
@@ -76,20 +78,28 @@ public class MainFrame extends Frame {
 
         // Create panels for each "frame"
         /* TODO: Replace this with a getData function and query */
-                Room[] roomsList = {new Room(1, 101, "Single", 100.0),
-                new Room(2, 102, "Double", 150.0),
-                new Room(3, 103, "Suite", 200.0)};
-
-        Reservation[] reservationsList = {new Reservation(1, 1, 101, LocalDate.now(), LocalDate.now().plusDays(1)),
-                new Reservation(2, 2, 102, LocalDate.now(), LocalDate.now().plusDays(1))};
+        Room[] roomsList = {new Room(101, "Single", 100.0),
+        new Room(102, "Double", 150.0),
+        new Room(103, "Suite", 200.0)};
         ArrayList<Room> rooms = new ArrayList<>();
-        ArrayList<Reservation> reservations = new ArrayList<>();
         for (Room room : roomsList) {
             rooms.add(room);
         }
+
+        // //TODO: Uncomment these and delete prev paragraph to get room info from database when sqlQueries can make the connection
+        // SQLQueries query = new SQLQueries();
+        // ArrayList<ArrayList<String>> room_info = query.getRoomStatus();
+        // rooms = getRoomObjects(room_info);
+
+        Reservation[] reservationsList = {new Reservation(1, 1, 101, LocalDate.now(), LocalDate.now().plusDays(1)),
+                new Reservation(2, 2, 102, LocalDate.now(), LocalDate.now().plusDays(1))};
+
+
+        ArrayList<Reservation> reservations = new ArrayList<>();
         for (Reservation reservation : reservationsList) {
             reservations.add(reservation);
         }
+
         AnalyticsScreen analyticsPanel = new AnalyticsScreen();
         RoomPanel roomStatusPanel = new RoomPanel(rooms, reservations);
         ReservationPanel reservationPanel = new ReservationPanel();
@@ -142,6 +152,25 @@ public class MainFrame extends Frame {
         });
 
     }
+
+
+    //goes through the list of strings of room info returned from sqlQueries and makes an arraylist of rooms from it
+    private static ArrayList<Room> getRoomObjects (ArrayList<ArrayList<String>> sqlData){
+        ArrayList<Room> rooms = new ArrayList<>();
+
+        for (int i=0; i<sqlData.size(); i++){
+            ArrayList<String> room_info = sqlData.get(i);
+            int room_num = Integer.parseInt(room_info.get(0));
+            String room_type = room_info.get(1);
+            double room_price = Integer.parseInt(room_info.get(2));
+
+            Room new_room = new Room(room_num, room_type, room_price);
+            rooms.add(new_room);
+        }
+
+        return rooms;
+    }
+
     private static void showPopup(Component parentComponent, Component popupComponent) {
         // Create a JDialog as the pop-up
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(parentComponent), "Popup", true);
