@@ -19,6 +19,14 @@ CREATE TABLE Room (
                             PRIMARY KEY (RoomNumber)
 );
 
+CREATE TABLE RoomKey (
+                            RoomKeyID INT NOT NULL AUTO_INCREMENT,
+                            RoomNumber INT NOT NULL,
+                            Expiration DATE NOT NULL,
+                            PRIMARY KEY (KeyID),
+                            FOREIGN KEY (RoomNumber) REFERENCES Room(RoomNumber)
+);
+
 CREATE TABLE Booking (
                             BookingID INT NOT NULL AUTO_INCREMENT,
                             GuestID INT NOT NULL,
@@ -40,12 +48,4 @@ CREATE TABLE Receipt (
                             PRIMARY KEY (ReceiptID),
                             FOREIGN KEY (GuestID) REFERENCES Guest(GuestID),
                             FOREIGN KEY (BookingID) REFERENCES Booking(BookingID)
-);
-
-CREATE TABLE RoomKey (
-                            RoomKeyID INT NOT NULL AUTO_INCREMENT,
-                            RoomNumber INT NOT NULL,
-                            Active BOOLEAN DEFAULT false,
-                            PRIMARY KEY (KeyID),
-                            FOREIGN KEY (RoomNumber) REFERENCES Room(RoomNumber)
 );
