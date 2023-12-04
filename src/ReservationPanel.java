@@ -1,95 +1,192 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
-import java.util.Date;
 
-public class ReservationPanel extends Panel {
-    private final TextField reservationIDField;
-    private final TextField customerIDField;
-    private final TextField roomIDField;
-    private String checkInDate;
-    private DatePicker CheckInDatePanel;
-    private String checkOutDate;
-    private DatePicker CheckOutDatePanel;
+public class ReservationPanel extends JPanel {
+    private JTable reservationTable;
+    private DefaultTableModel tableModel;
 
     public ReservationPanel() {
-        setLayout(new GridLayout(6, 2));
+        setLayout(new BorderLayout());
 
-        Label reservationIDLabel = new Label("Reservation ID:");
-        reservationIDField = new TextField();
+        // Title
+        JLabel titleLabel = new JLabel("Reservations");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        add(titleLabel, BorderLayout.NORTH);
 
-        Label customerIDLabel = new Label("Customer ID:");
-        customerIDField = new TextField();
+        // Buttons Panel
+        JPanel buttonsPanel = new JPanel(new FlowLayout());
+        JButton createReservationButton = new JButton("Create Reservation");
+        JButton selectDatesButton = new JButton("Select Dates");
 
-        Label roomIDLabel = new Label("Room ID:");
-        roomIDField = new TextField();
+        createReservationButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Display ReservationPopup as a popup
+                ReservationPopup reservationPopup = new ReservationPopup();
+                reservationPopup.setSize(600, 400);
+                reservationPopup.setVisible(true);
 
-        Label checkInLabel = new Label("Check-In Date (yyyy-MM-dd):");
-        CheckInDatePanel = new DatePicker();
 
-        Label checkOutLabel = new Label("Check-Out Date (yyyy-MM-dd):");
-        CheckOutDatePanel = new DatePicker();
 
-        Button makeReservationButton = new Button("Make Reservation");
-        makeReservationButton.addActionListener(new ReservationButtonListener());
+            }
+        });
 
-        add(reservationIDLabel);
-        add(reservationIDField);
+        selectDatesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Implement action for "Select Dates" button
+                JOptionPane.showMessageDialog(ReservationPanel.this, "Select Dates Button Clicked");
+                // Render a StartEndDatePicker as a popup
+                Frame frame = new Frame();
+                frame.setSize(600, 400);
+                frame.setLocationRelativeTo(null);
+                StartEndDatePicker startEndDatePicker = new StartEndDatePicker();
+                frame.add(startEndDatePicker);
+                frame.setVisible(true);
+                // listen for the submit button to be clicked
+                startEndDatePicker.submitButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // Perform any action needed before closing the window
+                        System.out.println("Selected Start Date exposed: " + startEndDatePicker.getStartDate());
+                        System.out.println("Selected End Date exposed: " + startEndDatePicker.getEndDate());
 
-        add(customerIDLabel);
-        add(customerIDField);
+                        // Close the window
+                        frame.dispose();
+                    }
+                });
+            }
+        });
 
-        add(roomIDLabel);
-        add(roomIDField);
+        buttonsPanel.add(createReservationButton);
+        buttonsPanel.add(selectDatesButton);
+        add(buttonsPanel, BorderLayout.CENTER);
 
-        add(checkInLabel);
-        add(CheckInDatePanel);
+        // Table
+        String[] columnNames = {"Customer", "Room Number", "Start", "End", "Room Type", "Check In/Out"};
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                return columnIndex == 5 ? JButton.class : Object.class;
+            }
+        };
+        reservationTable = new JTable(tableModel);
 
-        add(checkOutLabel);
-        add(CheckOutDatePanel);
+        // Add buttons to the "Check In/Out" column
+        TableColumn checkInOutColumn = reservationTable.getColumnModel().getColumn(5);
+        checkInOutColumn.setCellRenderer(new ButtonRenderer());
+        checkInOutColumn.setCellEditor(new ButtonEditor(new JCheckBox()));
 
-        add(makeReservationButton);
+        JScrollPane tableScrollPane = new JScrollPane(reservationTable);
+        add(tableScrollPane, BorderLayout.SOUTH);
+    }
+    private static void addDummyData(ReservationPanel reservationPanel) {
+        DefaultTableModel tableModel = reservationPanel.tableModel;
+
+        // Dummy data
+        Object[][] data = {
+                {"John Doe", "101", "2023-12-01", "2023-12-10", "Single", "Check In/Out"},
+                {"Jane Smith", "102", "2023-12-05", "2023-12-15", "Double", "Check In/Out"},
+                {"Bob Johnson", "103", "2023-12-12", "2023-12-20", "Suite", "Check In/Out"}
+                // Add more rows as needed
+        };
+
+        for (Object[] row : data) {
+            tableModel.addRow(row);
+        }
     }
 
-    private class ReservationButtonListener implements ActionListener {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Reservation Panel Example");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            ReservationPanel reservationPanel = new ReservationPanel();
+            addDummyData(reservationPanel);
+            frame.getContentPane().add(reservationPanel);
+
+            frame.setSize(1600, 900);
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
+    }
+
+    // Custom TableCellRenderer for rendering buttons
+    private static class ButtonRenderer extends JButton implements TableCellRenderer {
+        public ButtonRenderer() {
+            setOpaque(true);
+        }
+
         @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                int reservationID = Integer.parseInt(reservationIDField.getText());
-                int customerID = Integer.parseInt(customerIDField.getText());
-                int roomID = Integer.parseInt(roomIDField.getText());
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setText((value == null) ? "" : value.toString());
+            return this;
+        }
+    }
 
-//                Date checkInDate = new Date(checkInDateField.getText());
-//                Date checkOutDate = new Date(checkOutDateField.getText());
-                String checkInDate = ((DatePicker) CheckInDatePanel).getSelectedDate();
-                String checkOutDate = ((DatePicker) CheckOutDatePanel).getSelectedDate();
-                // Make into LocalDates
-                LocalDate checkInDateLocal = LocalDate.parse(checkInDate);
-                LocalDate checkOutDateLocal = LocalDate.parse(checkOutDate);
+    // Custom TableCellEditor for editing buttons
+    private class ButtonEditor extends DefaultCellEditor {
+        private JButton button;
+        private String label;
+        private boolean isPushed;
 
+        public ButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+            button = new JButton();
+            button.setOpaque(true);
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    fireEditingStopped();
+                }
+            });
+        }
 
-
-
-
-                // Create a new Reservation object with the input data
-                Reservation newReservation = new Reservation(reservationID, customerID, roomID, checkInDateLocal, checkOutDateLocal);
-
-                // Perform operations with the new reservation (e.g., save to database)
-                // For demonstration purposes, you can print the new reservation details
-                System.out.println("New Reservation Details:");
-                System.out.println("Reservation ID: " + newReservation.getReservationID());
-                System.out.println("Customer ID: " + newReservation.getCustomerID());
-                System.out.println("Room ID: " + newReservation.getRoomID());
-                System.out.println("Check-In Date: " + newReservation.getCheckInDate());
-                System.out.println("Check-Out Date: " + newReservation.getCheckOutDate());
-            } catch (NumberFormatException ex) {
-                System.err.println("Invalid input format for IDs. Please enter valid numbers.");
-            } catch (Exception ex) {
-                System.err.println("Invalid date format or other input error. Please check your inputs.");
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            if (isSelected) {
+                button.setForeground(table.getSelectionForeground());
+                button.setBackground(table.getSelectionBackground());
+            } else {
+                button.setForeground(table.getForeground());
+                button.setBackground(UIManager.getColor("Button.background"));
             }
+
+            label = (value == null) ? "" : value.toString();
+            button.setText(label);
+            isPushed = true;
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            if (isPushed) {
+                // Perform the action when the "Check In/Out" button is clicked
+                JOptionPane.showMessageDialog(ReservationPanel.this, "Check In/Out Button Clicked for Row " + reservationTable.getSelectedRow());
+                // Render a Check In/Out Panel as a popup
+                Frame frame = new Frame();
+                frame.setSize(600, 400);
+                frame.setLocationRelativeTo(null);
+                CheckInOutPanel checkInOutPanel = new CheckInOutPanel();
+                frame.add(checkInOutPanel);
+                frame.setVisible(true);
+
+
+            }
+            isPushed = false;
+            return label;
+        }
+
+        @Override
+        public boolean stopCellEditing() {
+            isPushed = false;
+            return super.stopCellEditing();
         }
     }
 }
-
-

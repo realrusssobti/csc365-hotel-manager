@@ -6,7 +6,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MainFrame extends Frame {
 
@@ -44,7 +43,7 @@ public class MainFrame extends Frame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Reservation button clicked!");
-                showPopup(cardPanel, new ReservationPanel());
+                cardLayout.show(cardPanel, "Reservation");
                 ;
             }
         });

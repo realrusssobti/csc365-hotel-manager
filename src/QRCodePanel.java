@@ -20,7 +20,7 @@ public class QRCodePanel extends JPanel {
         super.paintComponent(g);
 
         try {
-            BufferedImage qrCodeImage = generateQRCode(content, 450, 450);
+            BufferedImage qrCodeImage = generateQRCode(content, 500, 500);
             g.drawImage(qrCodeImage, 0, 0, this);
         } catch (WriterException e) {
             e.printStackTrace();
