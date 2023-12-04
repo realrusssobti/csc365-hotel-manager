@@ -3,7 +3,6 @@ CREATE TABLE Guest (
                             GuestID INT NOT NULL AUTO_INCREMENT,
                             FirstName VARCHAR(50) NOT NULL,
                             LastName VARCHAR(50) NOT NULL,
-                            Email VARCHAR(50) NOT NULL,
                             Phone VARCHAR(50) NOT NULL,
                             Addr VARCHAR(50) NOT NULL,
                             City VARCHAR(50) NOT NULL,

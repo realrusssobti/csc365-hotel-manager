@@ -1,43 +1,5 @@
-SET @input_date = 'input_date';
-SET @start_date = 'start_date';
-SET @end_date   = 'end_date';
-SET @room_type  = 'room_type';
-SET @room_num   = 'room_number';
-SET @phone      = 'phone';
-SET @first_name = 'first_name';
-SET @last_name  = 'last_name';
-
-
---Get count of active room keys for room
-SELECT K.RoomID, COUNT(K.KeyID) as KeyCount
-        FROM RoomKey K
-        WHERE K.RoomNumber = @room_number AND K.Active = true;
-
---Get count of inactive room keys for room
-SELECT K.RoomID, COUNT(K.KeyID) as KeyCount
-        FROM RoomKey K
-        WHERE K.RoomNumber = @room_number AND K.Active = false;
-
---Create view of bookings of specific person
-CREATE VIEW GuestBookings AS
-        SELECT G.FirstName, G.LastName, B.RoomNumber, B.CheckInDate, B.CheckOutDate, B.CheckedIn
-        FROM Guest G, Booking B
-        WHERE G.GuestID = @guest_id AND B.GuestID = @guest_id;
-
---Get room information by name and date
-SELECT *
-        FROM GuestBookings, 
-        WHERE  
-
---Get all previous bookings from before input_date:
-CREATE VIEW Bookings AS
-        SELECT G.GuestID, G.FirstName, G.LastName, R.RoomID, R.CheckInDate, R.CheckOutDate
-        FROM Guest G, Reservation R
-        WHERE CheckOutDate < 'input_date'
-SELECT * FROM Bookings;
---Need to switch to date input
-
-
+'ALL OF THE USER INPUTS ARE REPRESENTED BY QUOTES DESCRIBING WHAT THEY SHOULD BE'
+'DONT FORGET TO SWITCH THEM TO ?'
 
 --Test Shit Here
 
@@ -68,7 +30,7 @@ CREATE VIEW BookingInfo AS
 CREATE VIEW GuestBookingInfo AS
         SELECT *
         FROM BookingInfo
-        WHERE Phone = @phone;
+        WHERE Phone = 'phone';
 ________________________
 --Get room key count for a room by room number
 CREATE VIEW RoomKeyByRoom AS
@@ -81,7 +43,7 @@ CREATE VIEW GuestReciepts AS
         SELECT R.*, G.FirstName, G.LastName, G.Phone
         FROM Reciept R, Guest G
         ON R.GuestID = G.GuestID
-        WHERE G.Phone = @phone;
+        WHERE G.Phone = 'phone';
 --Select the most recent reciept
 SELECT *
         FROM GuestReciepts
@@ -91,3 +53,10 @@ ________________________
 --Check in / Check out
 
 ________________________
+
+
+
+________________________
+ -- Gonna put other stuff here thats not just queries -- 
+ -- Gonna move it to another file later --
+
