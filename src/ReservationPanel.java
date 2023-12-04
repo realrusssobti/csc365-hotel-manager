@@ -86,7 +86,7 @@ public class ReservationPanel extends JPanel {
         JScrollPane tableScrollPane = new JScrollPane(reservationTable);
         add(tableScrollPane, BorderLayout.SOUTH);
     }
-    private static void addDummyData(ReservationPanel reservationPanel) {
+    static void addDummyData(ReservationPanel reservationPanel) {
         DefaultTableModel tableModel = reservationPanel.tableModel;
 
         // Dummy data

@@ -23,12 +23,19 @@ public class MainFrame extends Frame {
         Button roomKeyButton = new Button("Room Key Screen");
         Button billingButton = new Button("Billing Screen");
         Button checkInOutButton = new Button("Check In/Out Screen");
+        Button customerManagerButton = new Button("Manage Customers");
 
         // Add button action listeners
         analyticsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(cardPanel, "Analytics");
+            }
+        });
+        customerManagerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(cardPanel, "CustomerManager");
             }
         });
         roomStatusButton.addActionListener(new ActionListener() {
@@ -92,9 +99,11 @@ public class MainFrame extends Frame {
         AnalyticsScreen analyticsPanel = new AnalyticsScreen();
         RoomPanel roomStatusPanel = new RoomPanel(rooms, reservations);
         ReservationPanel reservationPanel = new ReservationPanel();
+        ReservationPanel.addDummyData(reservationPanel);
         RoomKeyPanel roomKeyPanel = new RoomKeyPanel();
         CheckInOutPanel checkInOutPanel = new CheckInOutPanel();
         BillCustomerPanel billCustomerPanel = new BillCustomerPanel();
+        CustomerManager customerManagerPanel = new CustomerManager();
 
 
         // Create card layout and panel
@@ -109,6 +118,7 @@ public class MainFrame extends Frame {
         cardPanel.add(roomKeyPanel, "RoomKey");
         cardPanel.add(checkInOutPanel, "CheckInOut");
         cardPanel.add(billCustomerPanel, "BillCustomer");
+        cardPanel.add(customerManagerPanel, "CustomerManager");
 
 
         // Add buttons to the main frame using FlowLayout
@@ -119,7 +129,7 @@ public class MainFrame extends Frame {
         buttonPanel.add(roomKeyButton);
         buttonPanel.add(billingButton);
         buttonPanel.add(checkInOutButton);
-
+        buttonPanel.add(customerManagerButton);
         // Add components to the main frame
         add(buttonPanel, BorderLayout.NORTH);
         add(cardPanel, BorderLayout.CENTER);
@@ -156,6 +166,13 @@ public class MainFrame extends Frame {
 
 
     public static void main(String[] args) {
+        // set up flatlaf look and feel if not on mac
+        try {
+            if(!System.getProperty("os.name").toLowerCase().contains("mac"))  UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+        } catch (Exception e) {
+            System.err.println("Failed to initialize LaF");
+        }
+
         EventQueue.invokeLater(MainFrame::new);
     }
 }

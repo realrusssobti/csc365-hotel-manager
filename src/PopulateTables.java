@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -97,11 +98,11 @@ public class PopulateTables {
 
     public static void addGuest(Guest guest, Connection connection){
         try{
-            String query = "INSERT INTO Guest (firstName, lastName, email, phone, address, city, state, zip) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO Guest (FirstName, LastName, Email, Phone, Addr, City, St, Zip) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, guest.getFirstName());
             statement.setString(2, guest.getLastName());
-            statement.setString(3, guest.getEmail());
+            statement.setString(1, guest.getEmail());
             statement.setString(4, guest.getPhone());
             statement.setString(5, guest.getAddress());
             statement.setString(6, guest.getCity());
@@ -116,7 +117,7 @@ public class PopulateTables {
 
     public static void addRoom(Room room, Connection connection){
         try{
-            String query = "INSERT INTO Room (roomNumber, roomType, roomPrice) VALUES (?, ?, ?)";
+            String query = "INSERT INTO Room (RoomNumber, RoomType, RoomPrice) VALUES (?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, room.getRoomNumber());
             statement.setString(2, room.getRoomType());
