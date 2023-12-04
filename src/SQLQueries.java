@@ -37,7 +37,8 @@ public class SQLQueries {
                                 "FROM Bookings B, Guest G, Room R " +
                                 "WHERE B.GuestID = G.GuestID AND B.RoomID = R.RoomID;";
             PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeUpdate();
+            ResultSet resultSet = statement.executeQuery();
+
         }
         catch (SQLException e) {
             e.printStackTrace();
