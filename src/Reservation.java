@@ -1,13 +1,14 @@
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Reservation {
     private int reservationID;
     private int customerID;
     private int roomID;
-    private Date checkInDate;
-    private Date checkOutDate;
+    private LocalDate checkInDate;
+    private LocalDate checkOutDate;
 
-    public Reservation(int reservationID, int customerID, int roomID, Date checkInDate, Date checkOutDate) {
+    public Reservation(int reservationID, int customerID, int roomID, LocalDate checkInDate, LocalDate checkOutDate) {
         this.reservationID = reservationID;
         this.customerID = customerID;
         this.roomID = roomID;
@@ -42,19 +43,19 @@ public class Reservation {
         this.roomID = roomID;
     }
 
-    public Date getCheckInDate() {
+    public LocalDate getCheckInDate() {
         return checkInDate;
     }
 
-    public void setCheckInDate(Date checkInDate) {
+    public void setCheckInDate(LocalDate checkInDate) {
         this.checkInDate = checkInDate;
     }
 
-    public Date getCheckOutDate() {
+    public LocalDate getCheckOutDate() {
         return checkOutDate;
     }
 
-    public void setCheckOutDate(Date checkOutDate) {
+    public void setCheckOutDate(LocalDate checkOutDate) {
         this.checkOutDate = checkOutDate;
     }
 

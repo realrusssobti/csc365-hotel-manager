@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -47,6 +48,14 @@ public class MainFrame extends Frame {
                 ;
             }
         });
+        roomKeyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Room Key button clicked!");
+                cardLayout.show(cardPanel, "RoomKey");
+                ;
+            }
+        });
 
         // Create panels for each "frame"
         /* TODO: Replace this with a getData function and query */
@@ -54,8 +63,8 @@ public class MainFrame extends Frame {
                 new Room(2, 102, "Double", 150.0),
                 new Room(3, 103, "Suite", 200.0)};
 
-        Reservation[] reservationsList = {new Reservation(1, 1, 101, new Date(), new Date()),
-                new Reservation(2, 2, 102, new Date(), new Date())};
+        Reservation[] reservationsList = {new Reservation(1, 1, 101, LocalDate.now(), LocalDate.now().plusDays(1)),
+                new Reservation(2, 2, 102, LocalDate.now(), LocalDate.now().plusDays(1))};
         ArrayList<Room> rooms = new ArrayList<>();
         ArrayList<Reservation> reservations = new ArrayList<>();
         for (Room room : roomsList) {
@@ -67,6 +76,8 @@ public class MainFrame extends Frame {
         AnalyticsScreen analyticsPanel = new AnalyticsScreen();
         RoomPanel roomStatusPanel = new RoomPanel(rooms, reservations);
         ReservationPanel reservationPanel = new ReservationPanel();
+        RoomKeyPanel roomKeyPanel = new RoomKeyPanel();
+
 
         // Create card layout and panel
         cardLayout = new CardLayout();
@@ -77,6 +88,7 @@ public class MainFrame extends Frame {
 
         cardPanel.add(analyticsPanel, "Analytics");
         cardPanel.add(reservationPanel, "Reservation");
+        cardPanel.add(roomKeyPanel, "RoomKey");
 
 
         // Add buttons to the main frame using FlowLayout

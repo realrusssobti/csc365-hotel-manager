@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class ReservationPanel extends Panel {
@@ -8,9 +9,9 @@ public class ReservationPanel extends Panel {
     private final TextField customerIDField;
     private final TextField roomIDField;
     private String checkInDate;
-    private Panel CheckInDatePanel;
+    private DatePicker CheckInDatePanel;
     private String checkOutDate;
-    private Panel CheckOutDatePanel;
+    private DatePicker CheckOutDatePanel;
 
     public ReservationPanel() {
         setLayout(new GridLayout(6, 2));
@@ -63,15 +64,16 @@ public class ReservationPanel extends Panel {
 //                Date checkOutDate = new Date(checkOutDateField.getText());
                 String checkInDate = ((DatePicker) CheckInDatePanel).getSelectedDate();
                 String checkOutDate = ((DatePicker) CheckOutDatePanel).getSelectedDate();
-                // replace the - with /
-                checkInDate = checkInDate.replace("-", "/");
-                checkOutDate = checkOutDate.replace("-", "/");
+                // Make into LocalDates
+                LocalDate checkInDateLocal = LocalDate.parse(checkInDate);
+                LocalDate checkOutDateLocal = LocalDate.parse(checkOutDate);
+
 
 
 
 
                 // Create a new Reservation object with the input data
-                Reservation newReservation = new Reservation(reservationID, customerID, roomID, new Date(checkInDate), new Date(checkOutDate));
+                Reservation newReservation = new Reservation(reservationID, customerID, roomID, checkInDateLocal, checkOutDateLocal);
 
                 // Perform operations with the new reservation (e.g., save to database)
                 // For demonstration purposes, you can print the new reservation details
