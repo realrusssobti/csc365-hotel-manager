@@ -156,6 +156,13 @@ public class MainFrame extends Frame {
 
 
     public static void main(String[] args) {
+        // set up flatlaf look and feel
+        try {
+            UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+        } catch (Exception e) {
+            System.err.println("Failed to initialize LaF");
+        }
+
         EventQueue.invokeLater(MainFrame::new);
     }
 }
