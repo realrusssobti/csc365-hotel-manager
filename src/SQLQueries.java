@@ -22,6 +22,8 @@ public class SQLQueries {
     public SQLQueries() {
         try{
             connection = DriverManager.getConnection("jdbc:mysql://ambari-node5.csc.calpoly.edu:3306","rsobti","28103315");
+            // Use RSOBTI
+            connection.createStatement().execute("USE rsobti");
             System.out.println("Database connection opened.");
            }
            catch (SQLException e) {
@@ -44,11 +46,12 @@ public class SQLQueries {
 
     // returns a list of tuples: first name, last name, check in date, check out date, room type
     public ArrayList<ArrayList<String>> getReservationAll() {
+        System.out.println("Getting all reservations");
         ArrayList<ArrayList<String>> table = new ArrayList<>();
         try {
-            String query =  "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType, B.BookingID, G.GuestID, R.RoomNumber" +
-                                "FROM Bookings B, Guest G, Room R " +
-                                "WHERE B.GuestID = G.GuestID AND B.RoomID = R.RoomID;";
+            String query =  "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType, B.BookingID, G.GuestID, R.RoomNumber " +
+                                "FROM Booking B, Guest G, Room R " +
+                                "WHERE B.GuestID = G.GuestID AND B.RoomNumber = R.RoomNumber;";
             try (Statement statement = connection.createStatement()) {
                 ResultSet rs = statement.executeQuery(query);
                 while (rs.next()) {
@@ -68,6 +71,7 @@ public class SQLQueries {
                     String room_number      = Integer.toString(room_number_obj); // convert to string
                     Collections.addAll(tuple, first_name, last_name, check_in_date, check_out_date, room_type, bookingID, guestID, room_number);
                     table.add(tuple); // add new tuple to table list
+                    System.out.println("here");
                 }
             }
         } catch (SQLException e) {
@@ -79,9 +83,9 @@ public class SQLQueries {
     public ArrayList<String> getReservationByDate(Date givenCheckIn, Date givenCheckOut) {
         ArrayList<String> tuple = new ArrayList<>();
         try {
-            String query =  "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType, B.BookingID, G.GuestID, R.RoomNumber" +
+            String query =  "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType, B.BookingID, G.GuestID, R.RoomNumber " +
                                 "FROM Booking B, Guest G, Room R " +
-                                "WHERE B.GuestID = G.GuestID AND B.RoomID = R.RoomID " +
+                                "WHERE B.GuestID = G.GuestID AND B.RoomNumber = R.RoomNumber " +
                                 "AND B.CheckInDate = ? AND B.CheckOutDate = ?;";
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setDate(1, givenCheckIn);
@@ -115,10 +119,13 @@ public class SQLQueries {
     public ArrayList<ArrayList<String>> getRoomStatus() {
         ArrayList<ArrayList<String>> table = new ArrayList<>();
         try {
-            String query =  "SELECT R.RoomNumber, R.RoomType, R.RoomPrice, COUNT(K.RoomKeyID) AS KeyCount, G.FirstName, G.LastName, B.CheckOutDate " +
-                                "FROM Booking B, Guest G, Room R, RoomKey K " +
-                                "WHERE R.RoomNumber = B.RoomNumber AND R.RoomNumber = K.RoomNumber AND G.GuestID = B.GuestID " +
-                                "GROUP BY K.RoomNumber ORDER BY K.RoomNumber ASC;";
+            String query = "SELECT R.RoomNumber, R.RoomType, R.RoomPrice, COUNT(K.RoomKeyID) AS KeyCount, G.FirstName, G.LastName, B.CheckOutDate " +
+                    "FROM Room R " +
+                    "LEFT JOIN Booking B ON R.RoomNumber = B.RoomNumber " +
+                    "LEFT JOIN Guest G ON G.GuestID = B.GuestID " +
+                    "LEFT JOIN RoomKey K ON R.RoomNumber = K.RoomNumber " +
+                    "GROUP BY R.RoomNumber, R.RoomType, R.RoomPrice, G.FirstName, G.LastName, B.CheckOutDate " +
+                    "ORDER BY R.RoomNumber ASC;";
             try (Statement statement = connection.createStatement()) {
                 ResultSet rs = statement.executeQuery(query);
                 while (rs.next()) {
@@ -126,14 +133,19 @@ public class SQLQueries {
                     int room_number_obj     = rs.getInt("RoomNumber"); 
                     String room_number      = Integer.toString(room_number_obj); // convert to string
                     String room_type        = rs.getString("RoomType");
-                    int room_price_obj      = rs.getInt("RoomType");
+                    int room_price_obj      = rs.getInt("RoomPrice");
                     String room_price       = Integer.toString(room_price_obj);
                     int key_count_obj       = rs.getInt("KeyCount");
                     String key_count        = Integer.toString(key_count_obj);
                     String first_name       = rs.getString("FirstName");
                     String last_name        = rs.getString("LastName");
                     Date check_out_obj      = rs.getDate("CheckOutDate");
-                    String check_out_date   = check_out_obj.toString(); // convert to string
+                    String check_out_date   ; // convert to string
+                    if (check_out_obj == null) {
+                         check_out_date = new Date(0).toString();
+                    }
+                    else { check_out_date   = check_out_obj.toString(); // convert to string
+                         }
                     Collections.addAll(tuple, room_number, room_type, room_price, key_count, first_name, last_name, check_out_date);
                     table.add(tuple); // add new tuple to table list
                 }

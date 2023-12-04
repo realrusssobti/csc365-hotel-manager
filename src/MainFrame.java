@@ -79,30 +79,30 @@ public class MainFrame extends Frame {
 
         // Create panels for each "frame"
         /* TODO: Replace this with a getData function and query */
-        Room[] roomsList = {new Room(101, "Single", 100.0),
-        new Room(102, "Double", 150.0),
-        new Room(103, "Suite", 200.0)};
+//        Room[] roomsList = {new Room(101, "Single", 100.0),
+//        new Room(102, "Double", 150.0),
+//        new Room(103, "Suite", 200.0)};
         ArrayList<Room> rooms = new ArrayList<>();
-        for (Room room : roomsList) {
-            rooms.add(room);
-        }
-        ArrayList<ArrayList<String>> rooms_info = new ArrayList<ArrayList<String>>();
+//        for (Room room : roomsList) {
+//            rooms.add(room);
+//        }
+//        ArrayList<ArrayList<String>> rooms_info = new ArrayList<ArrayList<String>>();
 
         // //TODO: Uncomment these and delete prev paragraph to get room info from database when sqlQueries can make the connection
-        // SQLQueries query = new SQLQueries();
-        // ArrayList<ArrayList<String>> rooms_info = query.getRoomStatus();
-        // rooms = parseRoomObjects(rooms_info);
+         SQLQueries query = new SQLQueries();
+         ArrayList<ArrayList<String>> rooms_info = query.getRoomStatus();
+         rooms = parseRoomObjects(rooms_info);
 
-        Reservation[] reservationsList = {new Reservation(1, 1, 101, LocalDate.now(), LocalDate.now().plusDays(1)),
-                new Reservation(2, 2, 102, LocalDate.now(), LocalDate.now().plusDays(1))};
+//        Reservation[] reservationsList = {new Reservation(1, 1, 101, LocalDate.now(), LocalDate.now().plusDays(1)),
+//                new Reservation(2, 2, 102, LocalDate.now(), LocalDate.now().plusDays(1))};
         ArrayList<Reservation> reservations = new ArrayList<>();
-        for (Reservation reservation : reservationsList) {
-            reservations.add(reservation);
-        }
+//        for (Reservation reservation : reservationsList) {
+//            reservations.add(reservation);
+//        }
 
         // //TODO: Uncomment these and delete prev paragraph to get room info from database when sqlQueries can make the connection
-        // ArrayList<ArrayList<String>> reservations_info = query.getReservationAll();
-        // reservations = parseReservationObjects(reservations_info);
+         ArrayList<ArrayList<String>> reservations_info = query.getReservationAll();
+         reservations = parseReservationObjects(reservations_info);
 
         AnalyticsScreen analyticsPanel = new AnalyticsScreen();
         RoomPanel roomStatusPanel = new RoomPanel(rooms, reservations, sqlConnection);
@@ -160,7 +160,7 @@ public class MainFrame extends Frame {
 
 
     //goes through the list of strings of room info returned from sqlQueries and makes an arraylist of rooms from it
-    private static ArrayList<Room> parseRoomObjects (ArrayList<ArrayList<String>> sqlData){
+    protected static ArrayList<Room> parseRoomObjects (ArrayList<ArrayList<String>> sqlData){
         ArrayList<Room> rooms = new ArrayList<>();
 
         for (int i=0; i<sqlData.size(); i++){
@@ -176,7 +176,7 @@ public class MainFrame extends Frame {
         return rooms;
     }
 
-    private static ArrayList<Reservation> parseReservationObjects (ArrayList<ArrayList<String>> sqlData){
+    protected static ArrayList<Reservation> parseReservationObjects (ArrayList<ArrayList<String>> sqlData){
         ArrayList<Reservation> reservations = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
