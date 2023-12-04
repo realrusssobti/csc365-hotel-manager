@@ -98,10 +98,11 @@ public class PopulateTables {
 
     public static void addGuest(Guest guest, Connection connection){
         try{
-            String query = "INSERT INTO Guest (FirstName, LastName, Email, Phone, Addr, City, St, Zip) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO Guest (FirstName, LastName, Email, Phone, Addr, City, St, Zip) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, guest.getFirstName());
             statement.setString(2, guest.getLastName());
+            statement.setString(1, guest.getEmail());
             statement.setString(4, guest.getPhone());
             statement.setString(5, guest.getAddress());
             statement.setString(6, guest.getCity());
