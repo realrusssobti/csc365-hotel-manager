@@ -1,3 +1,7 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,10 +13,15 @@ public class PopulateTables {
     public static int guest_counter = 0;
     public static int reservation_counter = 0;
     public static void main (String[]args){
+
+        try{
+         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/your_database_name", "root", "your_password");}
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         ArrayList<Room> rooms = generateRooms(10, 50, 40);
-
         ArrayList<Guest> guests = generateGuests(80);
-
         ArrayList<Reservation> reservations = new ArrayList<>();
 
 
@@ -73,6 +82,39 @@ public class PopulateTables {
         }
 
         return guests;
+    }
+
+    public void addGuest(Guest guest, Connection connection){
+        try{
+            String query = "INSERT INTO Guest (firstName, lastName, email, phone, address, city, state, zip) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, guest.getFirstName());
+            statement.setString(2, guest.getLastName());
+            statement.setString(3, guest.getEmail());
+            statement.setString(4, guest.getPhone());
+            statement.setString(5, guest.getAddress());
+            statement.setString(6, guest.getCity());
+            statement.setString(7, guest.getState());
+            statement.setString(8, guest.getZip());
+            statement.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addRoom(Room room, Connection connection){
+        try{
+            String query = "INSERT INTO Room (roomNumber, roomType, roomPrice) VALUES (?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, room.getRoomNumber());
+            statement.setString(2, room.getRoomType());
+            statement.setDouble(3, room.getRoomPrice());
+            statement.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static int generate_random_num(int min, int max){
