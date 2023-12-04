@@ -156,9 +156,9 @@ public class MainFrame extends Frame {
 
 
     public static void main(String[] args) {
-        // set up flatlaf look and feel
+        // set up flatlaf look and feel if not on mac
         try {
-            UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatDarculaLaf());
+            if(!System.getProperty("os.name").toLowerCase().contains("mac"))  UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
         } catch (Exception e) {
             System.err.println("Failed to initialize LaF");
         }
