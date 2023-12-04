@@ -1,9 +1,10 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Date;
+import java.util.*;
 
 public class SQLQueries {
     private static Connection connection;
@@ -31,22 +32,31 @@ public class SQLQueries {
     }
 
     // first name, last name, check in date, check out date, room type
-    public String getReservationAll() {
-        try{
+    public ArrayList<ArrayList<String>> getReservationAll() {
+        ArrayList<ArrayList<String>> table = new ArrayList<>();
+        try {
             String query =  "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType " +
                                 "FROM Bookings B, Guest G, Room R " +
                                 "WHERE B.GuestID = G.GuestID AND B.RoomID = R.RoomID;";
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
-
-        }
-        catch (SQLException e) {
+            try (Statement statement = connection.createStatement()) {
+                ResultSet rs = statement.executeQuery(query);
+                while (rs.next()) {
+                    ArrayList<String> tuple = new ArrayList<>();
+                    String first_name = rs.getString("FirstName");
+                    String last_name = rs.getString("LastName");
+                    Date check_in_obj = rs.getDate("CheckInDate");
+                    String check_in_date = check_in_obj.toString(); // convert to string
+                    Date check_out_obj = rs.getDate("CheckOutDate");
+                    String check_out_date = check_out_obj.toString(); // convert to string
+                    String room_type = rs.getString("RoomType");
+                    Collections.addAll(tuple, first_name, last_name, check_in_date, check_out_date, room_type);
+                    table.add(tuple); // add new tuple to table list
+                }
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return 
-            "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType " +
-            "FROM Bookings B, Guest G, Room R " +
-            "WHERE B.GuestID = G.GuestID AND B.RoomID = R.RoomID;";
+        return table;
     }
     // first name, last name, check in date, check out date, room type
     public String getReservationByDate(java.sql.Date checkIn, java.sql.Date checkOut) {
