@@ -17,10 +17,11 @@ public class PopulateTables {
 
 
         try{
-         connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/your_database_name", "root", "your_password");}
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
+         connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/your_database_name", "root", "your_password");
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         //generate the rooms and add them calling the addRoom function
         ArrayList<Room> rooms = generateRooms(10, 50, 40);
