@@ -156,28 +156,67 @@ public class SQLQueries {
         return table;
     }
 
-    // returns a list of tuples: room number, room type, num of keys, customer name, checkout date
+    // // returns a list of tuples: room number, room type, num of keys, customer name, checkout date
+    // public ArrayList<String> getRoomStatus(int givenRoomNumber) {
+    //     ArrayList<String> tuple = new ArrayList<>();
+    //     try {
+    //         String query =  "SELECT R.RoomNumber, R.RoomType, COUNT(K.RoomKeyID) AS KeyCount, G.FirstName, G.LastName, B.CheckOutDate " +
+    //                             "FROM Booking B, Guest G, Room R, RoomKey K " +
+    //                             "WHERE R.RoomNumber = ? AND R.RoomNumber = B.RoomNumber AND R.RoomNumber = K.RoomNumber AND G.GuestID = B.GuestID " +
+    //                             "GROUP BY K.RoomNumber;";
+    //         try (PreparedStatement statement = connection.prepareStatement(query)) {
+    //             statement.setInt(1, givenRoomNumber);
+    //             ResultSet rs = statement.executeQuery();
+    //             while (rs.next()) {
+    //                 int room_number_obj = rs.getInt("RoomNumber"); 
+    //                 String room_number = Integer.toString(room_number_obj); // convert to string
+    //                 String room_type = rs.getString("RoomType");
+    //                 int key_count_obj = rs.getInt("KeyCount");
+    //                 String key_count = Integer.toString(key_count_obj);
+    //                 String first_name = rs.getString("FirstName");
+    //                 String last_name = rs.getString("LastName");
+    //                 Date check_out_obj = rs.getDate("CheckOutDate");
+    //                 String check_out_date = check_out_obj.toString(); // convert to string
+    //                 Collections.addAll(tuple, room_number, room_type, key_count, first_name, last_name, check_out_date);
+    //             }
+    //         }
+    //     } catch (SQLException e) {
+    //         e.printStackTrace();
+    //     }
+    //     return tuple;
+    // }
+
+        // returns a list of tuples: room number, room type, num of keys, customer name, checkout date
     public ArrayList<String> getRoomStatus(int givenRoomNumber) {
         ArrayList<String> tuple = new ArrayList<>();
         try {
-            String query =  "SELECT R.RoomNumber, R.RoomType, COUNT(K.RoomKeyID) AS KeyCount, G.FirstName, G.LastName, B.CheckOutDate " +
-                                "FROM Booking B, Guest G, Room R, RoomKey K " +
-                                "WHERE R.RoomNumber = ? AND R.RoomNumber = B.RoomNumber AND R.RoomNumber = K.RoomNumber AND G.GuestID = B.GuestID " +
-                                "GROUP BY K.RoomNumber;";
-            try (PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setInt(1, givenRoomNumber);
-                ResultSet rs = statement.executeQuery();
+            String query = "SELECT R.RoomNumber, R.RoomType, R.RoomPrice, COUNT(K.RoomKeyID) AS KeyCount, G.FirstName, G.LastName, B.CheckOutDate " +
+                    "FROM Room R " +
+                    "LEFT JOIN Booking B ON R.RoomNumber = B.RoomNumber " +
+                    "LEFT JOIN Guest G ON G.GuestID = B.GuestID " +
+                    "LEFT JOIN RoomKey K ON R.RoomNumber = K.RoomNumber " +
+                    "GROUP BY R.RoomNumber, R.RoomType, R.RoomPrice, G.FirstName, G.LastName, B.CheckOutDate " +
+                    "ORDER BY R.RoomNumber ASC;";
+            try (Statement statement = connection.createStatement()) {
+                ResultSet rs = statement.executeQuery(query);
                 while (rs.next()) {
-                    int room_number_obj = rs.getInt("RoomNumber"); 
-                    String room_number = Integer.toString(room_number_obj); // convert to string
-                    String room_type = rs.getString("RoomType");
-                    int key_count_obj = rs.getInt("KeyCount");
-                    String key_count = Integer.toString(key_count_obj);
-                    String first_name = rs.getString("FirstName");
-                    String last_name = rs.getString("LastName");
-                    Date check_out_obj = rs.getDate("CheckOutDate");
-                    String check_out_date = check_out_obj.toString(); // convert to string
-                    Collections.addAll(tuple, room_number, room_type, key_count, first_name, last_name, check_out_date);
+                    int room_number_obj     = rs.getInt("RoomNumber"); 
+                    String room_number      = Integer.toString(room_number_obj); // convert to string
+                    String room_type        = rs.getString("RoomType");
+                    int room_price_obj      = rs.getInt("RoomPrice");
+                    String room_price       = Integer.toString(room_price_obj);
+                    int key_count_obj       = rs.getInt("KeyCount");
+                    String key_count        = Integer.toString(key_count_obj);
+                    String first_name       = rs.getString("FirstName");
+                    String last_name        = rs.getString("LastName");
+                    Date check_out_obj      = rs.getDate("CheckOutDate");
+                    String check_out_date   ; // convert to string
+                    if (check_out_obj == null) {
+                         check_out_date = new Date(0).toString();
+                    }
+                    else { check_out_date   = check_out_obj.toString(); // convert to string
+                         }
+                    Collections.addAll(tuple, room_number, room_type, room_price, key_count, first_name, last_name, check_out_date);
                 }
             }
         } catch (SQLException e) {
