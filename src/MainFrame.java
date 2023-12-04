@@ -152,6 +152,7 @@ public class MainFrame extends Frame {
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
+                sqlConnection.endConnection(); //end connection when main window gets closed
             }
         });
 
