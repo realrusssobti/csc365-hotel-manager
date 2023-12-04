@@ -96,6 +96,38 @@ public class SQLQueries {
     }
 
 
+    // returns a list of tuples: room number, room type, num of keys, customer name, checkout date
+    public ArrayList<ArrayList<String>> getRoomStatus() {
+        ArrayList<ArrayList<String>> table = new ArrayList<>();
+        try {
+            String query =  "SELECT R.RoomNumber, R.RoomType, R.RoomPrice, COUNT(K.RoomKeyID) AS KeyCount, G.FirstName, G.LastName, B.CheckOutDate " +
+                                "FROM Booking B, Guest G, Room R, RoomKey K " +
+                                "WHERE R.RoomNumber = B.RoomNumber AND R.RoomNumber = K.RoomNumber AND G.GuestID = B.GuestID " +
+                                "GROUP BY K.RoomNumber ORDER BY K.RoomNumber ASC;";
+            try (Statement statement = connection.createStatement()) {
+                ResultSet rs = statement.executeQuery(query);
+                while (rs.next()) {
+                    ArrayList<String> tuple = new ArrayList<>();
+                    int room_number_obj     = rs.getInt("RoomNumber"); 
+                    String room_number      = Integer.toString(room_number_obj); // convert to string
+                    String room_type        = rs.getString("RoomType");
+                    int room_price_obj      = rs.getInt("RoomType");
+                    String room_price       = Integer.toString(room_price_obj);
+                    int key_count_obj       = rs.getInt("KeyCount");
+                    String key_count        = Integer.toString(key_count_obj);
+                    String first_name       = rs.getString("FirstName");
+                    String last_name        = rs.getString("LastName");
+                    Date check_out_obj      = rs.getDate("CheckOutDate");
+                    String check_out_date   = check_out_obj.toString(); // convert to string
+                    Collections.addAll(tuple, room_number, room_type, room_price, key_count, first_name, last_name, check_out_date);
+                    table.add(tuple); // add new tuple to table list
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return table;
+    }
 
     // returns a list of tuples: room number, room type, num of keys, customer name, checkout date
     public ArrayList<String> getRoomStatus(int givenRoomNumber) {

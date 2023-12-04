@@ -31,6 +31,8 @@ public class StartEndDatePicker extends Panel {
 
     }
 
+    
+
     private void initializeComponents() {
         titleLabel = new JLabel("Select start and end dates");
         startDatePicker = new DatePicker();
