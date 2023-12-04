@@ -128,19 +128,6 @@ public class PopulateTables {
         }
     }
 
-    public static void addRoomKey(Room room, java.util.Date expirationDate, Connection connection){
-        try{
-            String query = "INSERT INTO RoomKey (RoomNumber, Expiration) VALUES (?, ?)";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, room.getRoomNumber());
-            statement.setDate(2, new java.sql.Date(expirationDate.getTime()));
-            statement.executeUpdate();
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static int generate_random_num(int min, int max){
         int random_num = (int) (Math.random() * (max - min)) + min;
         return random_num;
