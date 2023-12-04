@@ -17,7 +17,7 @@ public class PopulateTables {
 
 
         try{
-         connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/your_database_name", "root", "your_password");
+            connection = DriverManager.getConnection("jdbc:mysql://ambari-node5.csc.calpoly.edu:3306","rsobti","28103315");
         }
         catch (SQLException e) {
             e.printStackTrace();
