@@ -161,8 +161,6 @@ public class MainFrame extends Frame {
 
 
     public static void main(String[] args) {
-
-
         EventQueue.invokeLater(MainFrame::new);
     }
 }
