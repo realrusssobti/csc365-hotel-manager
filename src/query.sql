@@ -60,3 +60,6 @@ ________________________
  -- Gonna put other stuff here thats not just queries -- 
  -- Gonna move it to another file later --
 
+________________________
+--Insert new Guest
+INSERT IN
