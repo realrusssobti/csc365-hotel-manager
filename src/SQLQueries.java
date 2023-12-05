@@ -124,7 +124,7 @@ public class SQLQueries {
                     "LEFT JOIN Booking B ON R.RoomNumber = B.RoomNumber " +
                     "LEFT JOIN Guest G ON G.GuestID = B.GuestID " +
                     "LEFT JOIN RoomKey K ON R.RoomNumber = K.RoomNumber " +
-                    "GROUP BY R.RoomNumber, R.RoomType, R.RoomPrice, G.FirstName, G.LastName, B.CheckOutDate " +
+                    "GROUP BY R.RoomNumber, R.RoomType, R.RoomPrice, G.FirstName, G.LastName, B.CheckOutDate, B.CheckInDate " +
                     "ORDER BY R.RoomNumber ASC;";
             try (Statement statement = connection.createStatement()) {
                 ResultSet rs = statement.executeQuery(query);
@@ -204,7 +204,7 @@ public class SQLQueries {
                     "LEFT JOIN Booking B ON R.RoomNumber = B.RoomNumber " +
                     "LEFT JOIN Guest G ON G.GuestID = B.GuestID " +
                     "LEFT JOIN RoomKey K ON R.RoomNumber = K.RoomNumber " +
-                    "GROUP BY R.RoomNumber, R.RoomType, R.RoomPrice, G.FirstName, G.LastName, B.CheckOutDate " +
+                    "GROUP BY R.RoomNumber, R.RoomType, R.RoomPrice, G.FirstName, G.LastName, B.CheckOutDate, B.CheckInDate " +
                     "ORDER BY R.RoomNumber ASC;";
             try (Statement statement = connection.createStatement()) {
                 ResultSet rs = statement.executeQuery(query);
