@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class RoomPanel extends Panel {
     private ArrayList<Room> rooms;
