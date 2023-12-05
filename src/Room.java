@@ -1,12 +1,11 @@
 public class Room {
-    private int roomID;
     private int roomNumber;
     private String roomType;
     private double roomPrice;
     
+    
 
-    public Room(int roomID, int roomNumber, String roomType, double roomPrice) {
-        this.roomID = roomID;
+    public Room(int roomNumber, String roomType, double roomPrice) {
         this.roomNumber = roomNumber;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
@@ -14,14 +13,6 @@ public class Room {
 
     public Room() {
         
-    }
-
-    public int getRoomID() {
-        return roomID;
-    }
-
-    public void setRoomID(int roomID) {
-        this.roomID = roomID;
     }
 
     public int getRoomNumber() {

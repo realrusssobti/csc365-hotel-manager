@@ -4,14 +4,14 @@ import java.util.Date;
 public class Reservation {
     private int reservationID;
     private int customerID;
-    private int roomID;
+    private int roomNumber;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
 
-    public Reservation(int reservationID, int customerID, int roomID, LocalDate checkInDate, LocalDate checkOutDate) {
+    public Reservation(int reservationID, int customerID, int roomNumber, LocalDate checkInDate, LocalDate checkOutDate) {
         this.reservationID = reservationID;
         this.customerID = customerID;
-        this.roomID = roomID;
+        this.roomNumber = roomNumber;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
     }
@@ -35,12 +35,12 @@ public class Reservation {
         this.customerID = customerID;
     }
 
-    public int getRoomID() {
-        return roomID;
+    public int getRoomNumber() {
+        return roomNumber;
     }
 
-    public void setRoomID(int roomID) {
-        this.roomID = roomID;
+    public void setRoomNumber(int roomNumber) {
+        this.roomNumber = roomNumber;
     }
 
     public LocalDate getCheckInDate() {

@@ -30,7 +30,7 @@ public class CheckInOutPanel extends Panel {
 
     private void performCheckOut(Reservation reservation) {
         reservation.setCheckOutDate(LocalDate.now()); // Set the check-out date
-        System.out.println("Checked out Room " + reservation.getRoomID());
+        System.out.println("Checked out Room " + reservation.getRoomNumber());
         // Update room status or perform necessary actions
     }
 
@@ -51,7 +51,7 @@ public class CheckInOutPanel extends Panel {
 
         for (Reservation reservation : reservations) {
             if (reservation.getCheckInDate() != null && reservation.getCheckOutDate() == null) {
-                Label roomLabel = new Label("Room " + reservation.getRoomID());
+                Label roomLabel = new Label("Room " + reservation.getRoomNumber());
                 Button checkOutButton = createCheckOutButton(reservation);
 
                 checkedInPanel.add(roomLabel);

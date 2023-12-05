@@ -103,7 +103,7 @@ public class BookingRoomPopup extends JFrame {
                 System.out.println("New Reservation Details:");
                 System.out.println("Reservation ID: " + newReservation.getReservationID());
                 System.out.println("Customer ID: " + newReservation.getCustomerID());
-                System.out.println("Room ID: " + newReservation.getRoomID());
+                System.out.println("Room ID: " + newReservation.getRoomNumber());
                 System.out.println("Check-In Date: " + newReservation.getCheckInDate());
                 System.out.println("Check-Out Date: " + newReservation.getCheckOutDate());
             } catch (NumberFormatException ex) {

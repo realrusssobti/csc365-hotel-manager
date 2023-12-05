@@ -17,7 +17,9 @@ public class PopulateTables {
 
 
         try{
-         connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/your_database_name", "root", "your_password");
+            connection = DriverManager.getConnection("jdbc:mysql://ambari-node5.csc.calpoly.edu:3306","rsobti","28103315");
+            // Use RSOBTI
+            connection.createStatement().execute("USE rsobti");
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -53,21 +55,21 @@ public class PopulateTables {
 
         for (int i=0; i<num_basic; i++){
             int price = 70;
-            Room rm = new Room(room_counter, room_counter, "Basic", price);
+            Room rm = new Room(room_counter, "Basic", price);
             rooms.add(rm);
             room_counter++;
         }
 
         for (int i=0; i<num_reg; i++){
             int price = 120;
-            Room rm = new Room(room_counter, room_counter, "Regular", price);
+            Room rm = new Room(room_counter, "Regular", price);
             rooms.add(rm);
             room_counter++;
         }
 
         for (int i=0; i<num_suites; i++){
             int price = 180;
-            Room rm = new Room(room_counter, room_counter, "Suite", price);
+            Room rm = new Room(room_counter, "Suite", price);
             rooms.add(rm);
             room_counter++;
         }
@@ -102,7 +104,7 @@ public class PopulateTables {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, guest.getFirstName());
             statement.setString(2, guest.getLastName());
-            statement.setString(1, guest.getEmail());
+            statement.setString(3, guest.getEmail());
             statement.setString(4, guest.getPhone());
             statement.setString(5, guest.getAddress());
             statement.setString(6, guest.getCity());
