@@ -225,9 +225,20 @@ public class SQLQueries {
                     String first_name       = rs.getString("FirstName");
                     String last_name        = rs.getString("LastName");
                     Date check_out_obj      = rs.getDate("CheckOutDate");
-                    String check_out_date   = check_out_obj.toString(); // convert to string
-                    Date check_in_obj       = rs.getDate("CheckOutDate");
-                    String check_in_date    = check_in_obj.toString(); // convert to string
+                    String check_out_date   ; // convert to string
+                    if (check_out_obj == null) {
+                         check_out_date = new Date(0).toString();
+                    }
+                    else { check_out_date   = check_out_obj.toString(); // convert to string
+                         }
+
+                    Date check_in_obj      = rs.getDate("CheckOutDate");
+                    String check_in_date   ; // convert to string
+                    if (check_in_obj == null) {
+                         check_in_date = new Date(0).toString();
+                    }
+                    else { check_in_date   = check_in_obj.toString(); // convert to string
+                    }
                     Collections.addAll(tuple, room_number, room_type, room_price, key_count, first_name, last_name, check_out_date, check_in_date);
                     table.add(tuple); // add new tuple to table list
                 }
@@ -292,7 +303,7 @@ public class SQLQueries {
                     String first_name       = rs.getString("FirstName");
                     String last_name        = rs.getString("LastName");
                     Date check_out_obj      = rs.getDate("CheckOutDate");
-                    String check_out_date   ; // convert to string
+                    String check_out_date; // convert to string
                     if (check_out_obj == null) {
                          check_out_date = new Date(0).toString();
                     }

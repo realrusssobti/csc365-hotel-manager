@@ -77,7 +77,8 @@ public class MainFrame extends Frame {
                 ;
             }
         });
-
+        // Resets and initializes rooms and guests
+        new PopulateTables();
         // Create panels for each "frame"
         /* TODO: Replace this with a getData function and query */
 //        Room[] roomsList = {new Room(101, "Single", 100.0),
@@ -158,7 +159,7 @@ public class MainFrame extends Frame {
         });
 
         // Auto-Refresh every minute with a Swing Timer to refresh data
-        Timer timer = new Timer(600, new ActionListener() {
+        Timer timer = new Timer(15000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Refresh data
