@@ -37,17 +37,19 @@ public class PopulateTables {
             addGuest(guest, connection);
         }
 
-        ArrayList<Reservation> reservations = new ArrayList<>();
+        ArrayList<Reservation> reservations = generateReservations();
 
 
-        //can move this into a function but for now just here for creating 1 reservation
-        int customer_id = generate_random_num(0, guest_counter - 1);
-        int room_id = generate_random_num(0, room_counter - 1);
-        LocalDate checkin_date = LocalDate.of(2014, 1, 1);
-        LocalDate checkout_date = LocalDate.of(2014, 1, 20);
+        // //can move this into a function but for now just here for creating 1 reservation
+        // int customer_id = generate_random_num(0, guest_counter - 1);
+        // int room_id = generate_random_num(0, room_counter - 1);
+        // LocalDate checkin_date = LocalDate.of(2014, 1, 1);
+        // LocalDate checkout_date = LocalDate.of(2014, 1, 20);
 
-        Reservation reservation_1 = new Reservation(reservation_counter, 1, 101, checkin_date, checkout_date);
-        reservation_counter++;
+        // Reservation reservation_1 = new Reservation(reservation_counter, 1, 101, checkin_date, checkout_date);
+        // reservation_counter++;
+
+        
     }
 
     public static ArrayList<Room> generateRooms(int num_suites, int num_reg, int num_basic){
@@ -96,6 +98,37 @@ public class PopulateTables {
         }
 
         return guests;
+    }
+
+    public static ArrayList<Reservation> generateReservations(){
+        ArrayList<Reservation> reservations = new ArrayList<>();
+
+        //customer 1 reserves room 101 from jan-1 to jan-30 in 2014
+        Reservation r1 = new Reservation(1, 2, 101, LocalDate.of(2014, 1, 1), LocalDate.of(2014, 1, 30));
+
+        //customer 2 reserves room 150 from jan-4 to feb-5 in 2014
+        Reservation r2 = new Reservation(2, 2, 150, LocalDate.of(2014, 1, 4), LocalDate.of(2014, 2, 5));
+
+        //customer 3 reserves room 190 from dec-1  to dec-26 in 2023 to cheat on his wife during christmas
+        Reservation r3 = new Reservation(3, 3, 190, LocalDate.of(2023, 12, 1), LocalDate.of(2023, 12, 26));
+
+        //customer 3 also reserves room 191 from dec-2  to dec-27 in 2023 for the person he is cheating with
+        Reservation r4 = new Reservation(4, 3, 191, LocalDate.of(2023, 12, 2), LocalDate.of(2023, 12, 27));
+
+        //customer 4 reserves room 192 from dec-1  to dec-26 in 2023 to spy on her cheating husband after seeing his recent checkings history
+        Reservation r5 = new Reservation(4, 3, 191, LocalDate.of(2023, 12, 1), LocalDate.of(2023, 12, 26));
+
+        //customer 10 reserves room 120 from jun-5 to jul-30 in 2024 for summer break
+        Reservation r6 = new Reservation(5, 10, 120, LocalDate.of(2024, 6, 5), LocalDate.of(2024, 7, 30));
+
+        reservations.add(r1);
+        reservations.add(r2);
+        reservations.add(r3);
+        reservations.add(r4);
+        reservations.add(r5);
+        reservations.add(r6);
+
+        return reservations;
     }
 
     public static void addGuest(Guest guest, Connection connection){

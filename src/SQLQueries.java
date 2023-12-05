@@ -8,7 +8,7 @@ import java.sql.Date;
 import java.util.*;
 
 // import mySQL
-import java.sql.*;
+
 
 /* Finished queries for
  * getting all reservations & getting a reservation by start/end dates
@@ -42,7 +42,50 @@ public class SQLQueries {
         }
     }
 
+    public ArrayList<ArrayList<String>> getCustomersAll(){
+        System.out.println("Getting all customers");
 
+        ArrayList<ArrayList<String>> table = new ArrayList<>();
+        try {
+            String query =  "SELECT * FROM Guest;";
+                                
+            try (Statement statement = connection.createStatement()) {
+                ResultSet rs = statement.executeQuery(query);
+                while (rs.next()) {
+                    ArrayList<String> tuple = new ArrayList<>();
+
+                    int guest_id_obj     = rs.getInt("GuestID"); 
+                    String guestID      = Integer.toString(guest_id_obj); // convert to string
+                    String first_name = rs.getString("FirstName");
+                    String last_name = rs.getString("LastName");
+                    String email = rs.getString("Email");
+                    String ph_num = rs.getString("Phone");
+                    String address = rs.getString("Addr");
+                    String city = rs.getString("City");
+                    String state = rs.getString("St");
+                    String zip = rs.getString("Zip");
+
+                    // Date check_in_obj = rs.getDate("CheckInDate");
+                    // String check_in_date = check_in_obj.toString(); // convert to string
+                    // Date check_out_obj = rs.getDate("CheckOutDate");
+                    // String check_out_date = check_out_obj.toString(); // convert to string
+                    // String room_type = rs.getString("RoomType");
+                    // int booking_id_obj     = rs.getInt("BookingID"); 
+                    // String bookingID      = Integer.toString(booking_id_obj); // convert to string
+                    
+                    // int room_number_obj     = rs.getInt("RoomNumber"); 
+                    // String room_number      = Integer.toString(room_number_obj); // convert to string
+                    
+                    Collections.addAll(tuple, guestID, first_name, last_name, email, ph_num, address, city, state, zip);
+                    table.add(tuple); // add new tuple to table list
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return table;
+
+    }
 
     // returns a list of tuples: first name, last name, check in date, check out date, room type
     public ArrayList<ArrayList<String>> getReservationAll() {
@@ -274,6 +317,109 @@ public class SQLQueries {
         return tuple;
     }
 
-    
+    // Get all room numbers from the database
+    public String[] getRoomNumbers() {
+        ArrayList<String> roomNumbers = new ArrayList<>();
+        try {
+            String query = "SELECT RoomNumber FROM Room;";
+            try (Statement statement = connection.createStatement()) {
+                ResultSet rs = statement.executeQuery(query);
+                while (rs.next()) {
+                    int roomNumber = rs.getInt("RoomNumber");
+                    roomNumbers.add(String.valueOf(roomNumber));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roomNumbers.toArray(new String[0]);
+    }
 
+    // Insert a new key into the database
+    public void addKey(String roomNumber, String expirationDate) {
+        try {
+            String query = "INSERT INTO RoomKey (RoomNumber, Expiration) VALUES (?, ?);";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, roomNumber);
+                statement.setString(2, expirationDate);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Get all keys from the database
+    public ArrayList<ArrayList<String>> getKeys() {
+        ArrayList<ArrayList<String>> table = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM RoomKey;";
+            try (Statement statement = connection.createStatement()) {
+                ResultSet rs = statement.executeQuery(query);
+                while (rs.next()) {
+                    ArrayList<String> tuple = new ArrayList<>();
+                    int room_key_id_obj = rs.getInt("RoomKeyID");
+                    String room_key_id = Integer.toString(room_key_id_obj); // convert to string
+                    int room_number_obj = rs.getInt("RoomNumber");
+                    String room_number = Integer.toString(room_number_obj); // convert to string
+                    Date expiration_obj = rs.getDate("Expiration");
+                    String expiration = expiration_obj.toString(); // convert to string
+                    Collections.addAll(tuple, room_key_id, room_number, expiration);
+                    table.add(tuple); // add new tuple to table list
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return table;
+    }
+
+    // Delete a key from the database
+    public void deleteKey(String roomKeyID) {
+        try {
+            String query = "DELETE FROM RoomKey WHERE RoomKeyID = ?;";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, roomKeyID);
+                statement.executeUpdate();
+                System.out.println("Deleted key with ID: " + roomKeyID);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Add a new customer to the database
+    public void addCustomer(String firstName, String lastName, String email, String phone, String address, String city, String state, String zip) {
+        try {
+            String query = "INSERT INTO Guest (FirstName, LastName, Email, Phone, Addr, City, St, Zip) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, firstName);
+                statement.setString(2, lastName);
+                statement.setString(3, email);
+                statement.setString(4, phone);
+                statement.setString(5, address);
+                statement.setString(6, city);
+                statement.setString(7, state);
+                statement.setString(8, zip);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Delete a customer from the database
+    public void deleteCustomer(String s) {
+        try {
+            String query = "DELETE FROM Guest WHERE GuestID = ?;";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, s);
+                statement.executeUpdate();
+                System.out.println("Deleted customer with ID: " + s);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

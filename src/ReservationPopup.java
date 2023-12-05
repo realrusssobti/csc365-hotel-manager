@@ -9,6 +9,7 @@ import java.time.LocalDate;
 public class ReservationPopup extends Frame {
     private final TextField customerIDField;
     private final TextField roomIDField;
+    private final TextField reservationIDField;
     private String checkInDate;
     private DatePicker CheckInDatePanel;
     private String checkOutDate;
@@ -19,6 +20,9 @@ public class ReservationPopup extends Frame {
 
         Label customerIDLabel = new Label("Customer ID:");
         customerIDField = new TextField();
+
+        Label reservationIDLabel = new Label("Reservation ID:");
+        reservationIDField = new TextField();
 
         Label roomIDLabel = new Label("Room ID:");
         roomIDField = new TextField();
@@ -31,6 +35,9 @@ public class ReservationPopup extends Frame {
 
         Button makeReservationButton = new Button("Make Reservation");
         makeReservationButton.addActionListener(new ReservationButtonListener());
+
+        add(reservationIDLabel);
+        add(reservationIDField);
 
         add(customerIDLabel);
         add(customerIDField);

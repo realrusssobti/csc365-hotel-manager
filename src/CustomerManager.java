@@ -4,17 +4,24 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class CustomerManager extends JPanel {
 
     private JTable customerTable;
     private DefaultTableModel tableModel;
+    private SQLQueries sqlConnection;
 
-    public CustomerManager() {
+    public CustomerManager(SQLQueries sqlConnection) {
+        this.sqlConnection = sqlConnection;
         initializeComponents();
-        addMockData(); // Add mock data for testing
+        getData(); // Add mock data for testing
     }
+
+    //emtpy constructor for mainmethod in this file when we first made it and wanted to isolate run it.
+    public CustomerManager(){};
+
 
     private void initializeComponents() {
         setLayout(new BorderLayout());
@@ -53,7 +60,7 @@ public class CustomerManager extends JPanel {
                 // For simplicity, let's just print a message for now
                 System.out.println("Add Customer button clicked");
                 // Render a AddCustomer as a popup
-                AddCustomer addCustomer = new AddCustomer();
+                AddCustomer addCustomer = new AddCustomer(sqlConnection);
                 addCustomer.setVisible(true);
 
             }
@@ -83,32 +90,52 @@ public class CustomerManager extends JPanel {
         customerTable.getColumnModel().getColumn(9).setPreferredWidth(100); // Actions
     }
 
-    private void addMockData() {
-        // Add some mock data for testing
-        Vector<Object> row1 = new Vector<>();
-        row1.add(1);
-        row1.add("John");
-        row1.add("Doe");
-        row1.add("john.doe@example.com");
-        row1.add("123-456-7890");
-        row1.add("123 Main St");
-        row1.add("Cityville");
-        row1.add("CA");
-        row1.add("12345");
+    private void getData() {
 
-        Vector<Object> row2 = new Vector<>();
-        row2.add(2);
-        row2.add("Jane");
-        row2.add("Smith");
-        row2.add("jane.smith@example.com");
-        row2.add("987-654-3210");
-        row2.add("456 Oak St");
-        row2.add("Townton");
-        row2.add("NY");
-        row2.add("54321");
+        ArrayList<ArrayList<String>> customers_info = sqlConnection.getCustomersAll();
 
-        tableModel.addRow(row1);
-        tableModel.addRow(row2);
+        for (int i=0; i<customers_info.size(); i++){
+            ArrayList<String> curr_customer = customers_info.get(i);
+            Vector<Object> new_row = new Vector<>();
+            new_row.add(curr_customer.get(0));  // guestID
+            new_row.add(curr_customer.get(1));  // First name
+            new_row.add(curr_customer.get(2));  // Last name
+            new_row.add(curr_customer.get(3));  // email
+            new_row.add(curr_customer.get(4));  // phNum
+            new_row.add(curr_customer.get(5));  // Address
+            new_row.add(curr_customer.get(6));  // City
+            new_row.add(curr_customer.get(7));  // State
+            new_row.add(curr_customer.get(8));  // Zip
+
+            tableModel.addRow(new_row);
+        }
+        // // Add some mock data for testing
+        // Vector<Object> row1 = new Vector<>();
+        // row1.add(1);
+        // row1.add("John");
+        // row1.add("Doe");
+        // row1.add("john.doe@example.com");
+        // row1.add("123-456-7890");
+        // row1.add("123 Main St");
+        // row1.add("Cityville");
+        // row1.add("CA");
+        // row1.add("12345");
+
+        // Vector<Object> row2 = new Vector<>();
+        // row2.add(2);
+        // row2.add("Jane");
+        // row2.add("Smith");
+        // row2.add("jane.smith@example.com");
+        // row2.add("987-654-3210");
+        // row2.add("456 Oak St");
+        // row2.add("Townton");
+        // row2.add("NY");
+        // row2.add("54321");
+
+        
+
+        // tableModel.addRow(row1);
+        // tableModel.addRow(row2);
     }
 
     // Custom renderer for the "Delete Customer" button
@@ -162,6 +189,7 @@ public class CustomerManager extends JPanel {
                     int row = customerTable.convertRowIndexToModel(customerTable.getEditingRow());
                     // pop-up "Deleted customer: <customer name>"
                     String customerName = tableModel.getValueAt(row, 1) + " " + tableModel.getValueAt(row, 2);
+                    sqlConnection.deleteCustomer(tableModel.getValueAt(row, 0).toString());
                     JOptionPane.showMessageDialog(null, "Deleted customer: " + customerName);
                     // Handle the deletion logic here (remove row from the table model, database, etc.)
                     tableModel.removeRow(row);

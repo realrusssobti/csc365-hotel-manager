@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -108,10 +109,10 @@ public class MainFrame extends Frame {
         RoomPanel roomStatusPanel = new RoomPanel(rooms, reservations, sqlConnection);
         ReservationPanel reservationPanel = new ReservationPanel();
         ReservationPanel.addDummyData(reservationPanel);
-        RoomKeyPanel roomKeyPanel = new RoomKeyPanel();
+        RoomKeyPanel roomKeyPanel = new RoomKeyPanel(sqlConnection);
         CheckInOutPanel checkInOutPanel = new CheckInOutPanel();
         BillCustomerPanel billCustomerPanel = new BillCustomerPanel();
-        CustomerManager customerManagerPanel = new CustomerManager();
+        CustomerManager customerManagerPanel = new CustomerManager(sqlConnection);
         HotelSplashScreen hotelSplashScreen = new HotelSplashScreen();
 
 
@@ -156,6 +157,18 @@ public class MainFrame extends Frame {
             }
         });
 
+        // Auto-Refresh every minute with a Swing Timer to refresh data
+        Timer timer = new Timer(600, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Refresh data
+                System.out.println("Refreshing data...");
+                // Repaint everything
+                cardPanel.repaint();
+            }
+
+        });
+        timer.start();
     }
 
 
