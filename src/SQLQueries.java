@@ -330,6 +330,76 @@ public class SQLQueries {
         return tuple;
     }
 
-    
+    // Get all room numbers from the database
+    public String[] getRoomNumbers() {
+        ArrayList<String> roomNumbers = new ArrayList<>();
+        try {
+            String query = "SELECT RoomNumber FROM Room;";
+            try (Statement statement = connection.createStatement()) {
+                ResultSet rs = statement.executeQuery(query);
+                while (rs.next()) {
+                    int roomNumber = rs.getInt("RoomNumber");
+                    roomNumbers.add(String.valueOf(roomNumber));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roomNumbers.toArray(new String[0]);
+    }
+
+    // Insert a new key into the database
+    public void addKey(String roomNumber, String expirationDate) {
+        try {
+            String query = "INSERT INTO RoomKey (RoomNumber, Expiration) VALUES (?, ?);";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, roomNumber);
+                statement.setString(2, expirationDate);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Get all keys from the database
+    public ArrayList<ArrayList<String>> getKeys() {
+        ArrayList<ArrayList<String>> table = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM RoomKey;";
+            try (Statement statement = connection.createStatement()) {
+                ResultSet rs = statement.executeQuery(query);
+                while (rs.next()) {
+                    ArrayList<String> tuple = new ArrayList<>();
+                    int room_key_id_obj = rs.getInt("RoomKeyID");
+                    String room_key_id = Integer.toString(room_key_id_obj); // convert to string
+                    int room_number_obj = rs.getInt("RoomNumber");
+                    String room_number = Integer.toString(room_number_obj); // convert to string
+                    Date expiration_obj = rs.getDate("Expiration");
+                    String expiration = expiration_obj.toString(); // convert to string
+                    Collections.addAll(tuple, room_key_id, room_number, expiration);
+                    table.add(tuple); // add new tuple to table list
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return table;
+    }
+
+    // Delete a key from the database
+    public void deleteKey(String roomKeyID) {
+        try {
+            String query = "DELETE FROM RoomKey WHERE RoomKeyID = ?;";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, roomKeyID);
+                statement.executeUpdate();
+                System.out.println("Deleted key with ID: " + roomKeyID);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

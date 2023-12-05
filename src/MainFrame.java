@@ -109,7 +109,7 @@ public class MainFrame extends Frame {
         RoomPanel roomStatusPanel = new RoomPanel(rooms, reservations, sqlConnection);
         ReservationPanel reservationPanel = new ReservationPanel();
         ReservationPanel.addDummyData(reservationPanel);
-        RoomKeyPanel roomKeyPanel = new RoomKeyPanel();
+        RoomKeyPanel roomKeyPanel = new RoomKeyPanel(sqlConnection);
         CheckInOutPanel checkInOutPanel = new CheckInOutPanel();
         BillCustomerPanel billCustomerPanel = new BillCustomerPanel();
         CustomerManager customerManagerPanel = new CustomerManager(sqlConnection);

@@ -5,6 +5,8 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Vector;
 
 public class RoomKeyPanel extends JPanel {
     private JTable keyTable;
@@ -12,10 +14,14 @@ public class RoomKeyPanel extends JPanel {
 
     private JComboBox<String> roomNumberComboBox;
     private DatePicker expirationDateComboBox;
+    private SQLQueries connection;
+    private String[] roomNumbers;
 
-    public RoomKeyPanel() {
+    public RoomKeyPanel(SQLQueries sqlConnection) {
         setLayout(new GridLayout(1, 2));
-
+        this.connection = sqlConnection;
+        // Get the array of room numbers from the database
+        roomNumbers = sqlConnection.getRoomNumbers();
         // Create the table
         createKeyTable();
 
@@ -37,14 +43,18 @@ public class RoomKeyPanel extends JPanel {
         add(scrollPane);
 
         // Add a dummy row for illustration
-        addKeyToTable(1, "101", "2023-12-31");
+//        addKeyToTable(1, "101", "2023-12-31");
+        ArrayList<ArrayList<String>> keys = connection.getKeys();
+        for (ArrayList<String> key : keys) {
+            addKeyToTable(Integer.parseInt(key.get(0)), key.get(1), key.get(2));
+        }
     }
 
     private void createCreateKeyPane() {
         JPanel createKeyPane = new JPanel(new GridLayout(4, 1));
 
         // Create components for "Create Key" pane
-        roomNumberComboBox = new JComboBox<>(new String[]{"101", "102", "103"});
+        roomNumberComboBox = new JComboBox<>(this.roomNumbers);
         expirationDateComboBox = new DatePicker();
 
         JButton createKeyButton = new JButton("Create Key");
@@ -60,6 +70,7 @@ public class RoomKeyPanel extends JPanel {
 
                 // Add the created key to the table
                 addKeyToTable(tableModel.getRowCount() + 1, selectedRoomNumber, selectedExpirationDate);
+                connection.addKey(selectedRoomNumber, selectedExpirationDate);
                 // Render pop-up for QR code
                 QRCodePanel qrCodePopup = new QRCodePanel("" +
                         "Room Number: " + selectedRoomNumber + "\n" +
@@ -90,15 +101,18 @@ public class RoomKeyPanel extends JPanel {
 
     private void addKeyToTable(int keyID, String roomNumber, String expirationDate) {
         Object[] data = {keyID, roomNumber, expirationDate, "Delete"};
+        // add the data to the SQL database
+
         tableModel.addRow(data);
     }
 
     public static void main(String[] args) {
+        SQLQueries sqlConnection = new SQLQueries();
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Room Key Panel Example");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-            RoomKeyPanel roomKeyPanel = new RoomKeyPanel();
+            RoomKeyPanel roomKeyPanel = new RoomKeyPanel(sqlConnection);
             frame.getContentPane().add(roomKeyPanel);
 
             frame.setSize(1600, 900);
@@ -133,7 +147,7 @@ public class RoomKeyPanel extends JPanel {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    fireEditingStopped();
+                    fireEditingStopped(); // NOTE: DO NOT DELETE THE LAST ROW, IT WILL CRASH THE PANE
                 }
             });
         }
@@ -160,7 +174,19 @@ public class RoomKeyPanel extends JPanel {
                 // Perform the delete action when the button is clicked
                 int selectedRow = keyTable.getSelectedRow();
                 if (selectedRow != -1) {
-                    tableModel.removeRow(selectedRow);
+                    // get the key id
+                    int key_id = (int) keyTable.getValueAt(selectedRow, 0);
+                    // delete the key from the database
+                    connection.deleteKey(Integer.toString(key_id));
+                    try {
+                        tableModel.removeRow(selectedRow);
+                    } catch (Exception e) {
+                        try {
+                            tableModel.removeRow(selectedRow - 1);
+                        } catch (Exception e2) {
+                            System.out.println("No rows to delete");
+                        }
+                    }
                 }
             }
             isPushed = false;
