@@ -82,9 +82,18 @@ public class RoomPanel extends Panel {
             int num_keys = Integer.parseInt(room_info.get(3));
             String check_out_date_string = room_info.get(6);
             
-            boolean isTaken = false;
+            boolean isTaken;
             LocalDate curr_date = LocalDate.now();
             LocalDate check_in_date = LocalDate.parse(room_info.get(7), formatter);
+            LocalDate check_out_date = LocalDate.parse(check_out_date_string, formatter);
+
+            if (curr_date.isAfter(check_in_date) && curr_date.isBefore(check_out_date)){
+                isTaken = true;
+            }
+            else{
+                isTaken = false;
+            }
+
 
             RoomStatusPopup popup = new RoomStatusPopup(String.valueOf(room.getRoomNumber()), isTaken, num_keys, guest_name, check_out_date_string);
             popup.setSize(300, 500);
