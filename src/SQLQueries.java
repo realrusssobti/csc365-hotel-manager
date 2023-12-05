@@ -42,7 +42,50 @@ public class SQLQueries {
         }
     }
 
+    public ArrayList<ArrayList<String>> getCustomersAll(){
+        System.out.println("Getting all customers");
 
+        ArrayList<ArrayList<String>> table = new ArrayList<>();
+        try {
+            String query =  "SELECT * FROM Guest;";
+                                
+            try (Statement statement = connection.createStatement()) {
+                ResultSet rs = statement.executeQuery(query);
+                while (rs.next()) {
+                    ArrayList<String> tuple = new ArrayList<>();
+
+                    int guest_id_obj     = rs.getInt("GuestID"); 
+                    String guestID      = Integer.toString(guest_id_obj); // convert to string
+                    String first_name = rs.getString("FirstName");
+                    String last_name = rs.getString("LastName");
+                    String email = rs.getString("Email");
+                    String ph_num = rs.getString("Phone");
+                    String address = rs.getString("Addr");
+                    String city = rs.getString("City");
+                    String state = rs.getString("St");
+                    String zip = rs.getString("Zip");
+
+                    // Date check_in_obj = rs.getDate("CheckInDate");
+                    // String check_in_date = check_in_obj.toString(); // convert to string
+                    // Date check_out_obj = rs.getDate("CheckOutDate");
+                    // String check_out_date = check_out_obj.toString(); // convert to string
+                    // String room_type = rs.getString("RoomType");
+                    // int booking_id_obj     = rs.getInt("BookingID"); 
+                    // String bookingID      = Integer.toString(booking_id_obj); // convert to string
+                    
+                    // int room_number_obj     = rs.getInt("RoomNumber"); 
+                    // String room_number      = Integer.toString(room_number_obj); // convert to string
+                    
+                    Collections.addAll(tuple, guestID, first_name, last_name, email, ph_num, address, city, state, zip);
+                    table.add(tuple); // add new tuple to table list
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return table;
+
+    }
 
     // returns a list of tuples: first name, last name, check in date, check out date, room type
     public ArrayList<ArrayList<String>> getReservationAll() {

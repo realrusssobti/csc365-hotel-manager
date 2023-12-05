@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -111,7 +112,7 @@ public class MainFrame extends Frame {
         RoomKeyPanel roomKeyPanel = new RoomKeyPanel();
         CheckInOutPanel checkInOutPanel = new CheckInOutPanel();
         BillCustomerPanel billCustomerPanel = new BillCustomerPanel();
-        CustomerManager customerManagerPanel = new CustomerManager();
+        CustomerManager customerManagerPanel = new CustomerManager(sqlConnection);
         HotelSplashScreen hotelSplashScreen = new HotelSplashScreen();
 
 
