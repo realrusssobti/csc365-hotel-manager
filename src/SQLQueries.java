@@ -249,36 +249,6 @@ public class SQLQueries {
         return table;
     }
 
-    // // returns a list of tuples: room number, room type, num of keys, customer name, checkout date
-    // public ArrayList<String> getRoomStatus(int givenRoomNumber) {
-    //     ArrayList<String> tuple = new ArrayList<>();
-    //     try {
-    //         String query =  "SELECT R.RoomNumber, R.RoomType, COUNT(K.RoomKeyID) AS KeyCount, G.FirstName, G.LastName, B.CheckOutDate " +
-    //                             "FROM Booking B, Guest G, Room R, RoomKey K " +
-    //                             "WHERE R.RoomNumber = ? AND R.RoomNumber = B.RoomNumber AND R.RoomNumber = K.RoomNumber AND G.GuestID = B.GuestID " +
-    //                             "GROUP BY K.RoomNumber;";
-    //         try (PreparedStatement statement = connection.prepareStatement(query)) {
-    //             statement.setInt(1, givenRoomNumber);
-    //             ResultSet rs = statement.executeQuery();
-    //             while (rs.next()) {
-    //                 int room_number_obj = rs.getInt("RoomNumber"); 
-    //                 String room_number = Integer.toString(room_number_obj); // convert to string
-    //                 String room_type = rs.getString("RoomType");
-    //                 int key_count_obj = rs.getInt("KeyCount");
-    //                 String key_count = Integer.toString(key_count_obj);
-    //                 String first_name = rs.getString("FirstName");
-    //                 String last_name = rs.getString("LastName");
-    //                 Date check_out_obj = rs.getDate("CheckOutDate");
-    //                 String check_out_date = check_out_obj.toString(); // convert to string
-    //                 Collections.addAll(tuple, room_number, room_type, key_count, first_name, last_name, check_out_date);
-    //             }
-    //         }
-    //     } catch (SQLException e) {
-    //         e.printStackTrace();
-    //     }
-    //     return tuple;
-    // }
-
         // returns a list of tuples: room number, room type, num of keys, customer name, checkout date
     public ArrayList<String> getRoomStatus(int givenRoomNumber) {
         ArrayList<String> tuple = new ArrayList<>();
@@ -326,6 +296,24 @@ public class SQLQueries {
         return tuple;
     }
 
+    // Get all room numbers from the database
+    public String[] getRoomNumbers() {
+        ArrayList<String> roomNumbers = new ArrayList<>();
+        try {
+            String query = "SELECT RoomNumber FROM Room;";
+            try (Statement statement = connection.createStatement()) {
+                ResultSet rs = statement.executeQuery(query);
+                while (rs.next()) {
+                    int roomNumber = rs.getInt("RoomNumber");
+                    roomNumbers.add(String.valueOf(roomNumber));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roomNumbers.toArray(new String[0]);
+    }
+
 
     // returns a list of tuples: room number, keycount
     public ArrayList<ArrayList<String>> getKeyCountALL() {
@@ -370,23 +358,9 @@ public class SQLQueries {
         return tuple;
     }
 
-    // Get all room numbers from the database
-    public String[] getRoomNumbers() {
-        ArrayList<String> roomNumbers = new ArrayList<>();
-        try {
-            String query = "SELECT RoomNumber FROM Room;";
-            try (Statement statement = connection.createStatement()) {
-                ResultSet rs = statement.executeQuery(query);
-                while (rs.next()) {
-                    int roomNumber = rs.getInt("RoomNumber");
-                    roomNumbers.add(String.valueOf(roomNumber));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return roomNumbers.toArray(new String[0]);
-    }
+
+
+
 
     // Insert a new key into the database
     public void addKey(String roomNumber, String expirationDate) {
@@ -441,6 +415,9 @@ public class SQLQueries {
         }
     }
 
+
+
+
     // Add a new customer to the database
     public void addCustomer(String firstName, String lastName, String email, String phone, String address, String city, String state, String zip) {
         try {
@@ -475,4 +452,34 @@ public class SQLQueries {
         }
 
     }
+
+    public void addReservation(String firstName, String lastName, Date checkInDate, Date checkOutDate, String roomType) {
+        try {
+            // Assuming you have tables Guest and Room in your database
+            // Adjust the table and column names as per your database schema
+            String guestQuery = "INSERT INTO Guest (FirstName, LastName) VALUES (?, ?)";
+            String bookingQuery = "INSERT INTO Booking (GuestID, CheckInDate, CheckOutDate, RoomNumber) VALUES ((SELECT GuestID FROM Guest WHERE FirstName = ? AND LastName = ?), ?, ?, (SELECT RoomNumber FROM Room WHERE RoomType = ? LIMIT 1))";
+
+            // Insert guest details first
+            try (PreparedStatement guestStatement = connection.prepareStatement(guestQuery)) {
+                guestStatement.setString(1, firstName);
+                guestStatement.setString(2, lastName);
+                guestStatement.executeUpdate();
+            }
+
+            // Insert reservation details
+            try (PreparedStatement bookingStatement = connection.prepareStatement(bookingQuery)) {
+                bookingStatement.setString(1, firstName);
+                bookingStatement.setString(2, lastName);
+                bookingStatement.setDate(3, checkInDate);
+                bookingStatement.setDate(4, checkOutDate);
+                bookingStatement.setString(5, roomType);
+                bookingStatement.executeUpdate();
+            }
+            System.out.println("Reservation added successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

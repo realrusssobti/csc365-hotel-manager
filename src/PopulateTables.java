@@ -24,6 +24,8 @@ public class PopulateTables {
             e.printStackTrace();
         }
 
+        resetTables();
+
         // generate the rooms and add them calling the addRoom function
         ArrayList<Room> rooms = generateRooms(10, 50, 40);
         for (Room room : rooms) {
@@ -56,8 +58,6 @@ public class PopulateTables {
     }
 
     public static ArrayList<Room> generateRooms(int num_suites, int num_reg, int num_basic) {
-        resetRooms();
-
         ArrayList<Room> rooms = new ArrayList<>();
         int room_counter = 100;
 
