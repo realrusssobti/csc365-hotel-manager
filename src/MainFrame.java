@@ -157,6 +157,18 @@ public class MainFrame extends Frame {
             }
         });
 
+        // Auto-Refresh every minute with a Swing Timer to refresh data
+        Timer timer = new Timer(600, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Refresh data
+                System.out.println("Refreshing data...");
+                // Repaint everything
+                cardPanel.repaint();
+            }
+
+        });
+        timer.start();
     }
 
 

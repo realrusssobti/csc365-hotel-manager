@@ -8,7 +8,7 @@ import java.sql.Date;
 import java.util.*;
 
 // import mySQL
-import java.sql.*;
+
 
 /* Finished queries for
  * getting all reservations & getting a reservation by start/end dates
@@ -401,5 +401,38 @@ public class SQLQueries {
         }
     }
 
+    // Add a new customer to the database
+    public void addCustomer(String firstName, String lastName, String email, String phone, String address, String city, String state, String zip) {
+        try {
+            String query = "INSERT INTO Guest (FirstName, LastName, Email, Phone, Addr, City, St, Zip) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, firstName);
+                statement.setString(2, lastName);
+                statement.setString(3, email);
+                statement.setString(4, phone);
+                statement.setString(5, address);
+                statement.setString(6, city);
+                statement.setString(7, state);
+                statement.setString(8, zip);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
+    // Delete a customer from the database
+    public void deleteCustomer(String s) {
+        try {
+            String query = "DELETE FROM Guest WHERE GuestID = ?;";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, s);
+                statement.executeUpdate();
+                System.out.println("Deleted customer with ID: " + s);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

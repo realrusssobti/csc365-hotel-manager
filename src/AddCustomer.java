@@ -13,9 +13,11 @@ public class AddCustomer extends JFrame {
     private JTextField cityField;
     private JTextField stateField;
     private JTextField zipField;
+    private SQLQueries connection;
 
-    public AddCustomer() {
+    public AddCustomer(SQLQueries connection) {
         initializeComponents();
+        this.connection = connection;
     }
 
     private void initializeComponents() {
@@ -81,6 +83,9 @@ public class AddCustomer extends JFrame {
                 System.out.println("State: " + state);
                 System.out.println("Zip: " + zip);
 
+                // Add the customer to the database
+                connection.addCustomer(firstName, lastName, email, phone, address, city, state, zip);
+
                 // Close the pop-up frame
                 dispose();
             }
@@ -98,7 +103,7 @@ public class AddCustomer extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            AddCustomer addCustomer = new AddCustomer();
+            AddCustomer addCustomer = new AddCustomer(new SQLQueries());
             addCustomer.setLocationRelativeTo(null);
             addCustomer.setVisible(true);
         });

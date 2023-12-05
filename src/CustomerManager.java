@@ -60,7 +60,7 @@ public class CustomerManager extends JPanel {
                 // For simplicity, let's just print a message for now
                 System.out.println("Add Customer button clicked");
                 // Render a AddCustomer as a popup
-                AddCustomer addCustomer = new AddCustomer();
+                AddCustomer addCustomer = new AddCustomer(sqlConnection);
                 addCustomer.setVisible(true);
 
             }
@@ -189,6 +189,7 @@ public class CustomerManager extends JPanel {
                     int row = customerTable.convertRowIndexToModel(customerTable.getEditingRow());
                     // pop-up "Deleted customer: <customer name>"
                     String customerName = tableModel.getValueAt(row, 1) + " " + tableModel.getValueAt(row, 2);
+                    sqlConnection.deleteCustomer(tableModel.getValueAt(row, 0).toString());
                     JOptionPane.showMessageDialog(null, "Deleted customer: " + customerName);
                     // Handle the deletion logic here (remove row from the table model, database, etc.)
                     tableModel.removeRow(row);
