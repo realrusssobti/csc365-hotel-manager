@@ -1,17 +1,27 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class CheckInOutPanel extends Panel {
 
     private final ArrayList<Reservation> reservations;
+    private SQLQueries sqlConnection;
 
-    public CheckInOutPanel() {
-        this.reservations = new ArrayList<>();
-        reservations.add(new Reservation(1, 101, 1, LocalDate.now(), null)); // Replace null with actual check-out date
-        reservations.add(new Reservation(2, 102, 2, null, null)); // Replace null with actual check-in date
+    public CheckInOutPanel(SQLQueries sqlConnection) {
+        this.sqlConnection = sqlConnection;
+        // this.reservations = new ArrayList<>();
+        // reservations.add(new Reservation(1, 101, 1, LocalDate.now(), null)); // Replace null with actual check-out date
+        // reservations.add(new Reservation(2, 102, 2, null, null)); // Replace null with actual check-in date
+
+
+        LocalDate curr_date = LocalDate.now();
+
+        //getting upcoming reservations from db (reservations with check-in date later than current date)
+        ArrayList<ArrayList<String>> reservations_info = sqlConnection.getReservationsBeyondDate(curr_date);
+        this.reservations = MainFrame.parseReservationObjects(reservations_info);
 
         setLayout(new GridLayout(2, 1));
 
@@ -77,6 +87,28 @@ public class CheckInOutPanel extends Panel {
 
         return checkInReservationPanel;
     }
+
+    // protected static ArrayList<Reservation> parseReservationObjects (ArrayList<ArrayList<String>> sqlData){
+    //     ArrayList<Reservation> reservations = new ArrayList<>();
+    //     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    //     for (int i=0; i<sqlData.size(); i++){
+    //         ArrayList<String> reservation_info = sqlData.get(i);
+
+    //         int bookingID = Integer.parseInt(reservation_info.get(5));
+    //         int guestID = Integer.parseInt(reservation_info.get(6));
+    //         int room_number = Integer.parseInt(reservation_info.get(7));
+    //         LocalDate checkin_date = LocalDate.parse(reservation_info.get(2), formatter);
+    //         LocalDate checkout_date = LocalDate.parse(reservation_info.get(3), formatter);
+
+    //         Reservation new_reservation = new Reservation(bookingID, guestID, room_number, checkin_date, checkout_date);
+    //         reservations.add(new_reservation);
+    //     }
+
+
+    //     return reservations;
+    // }
+
 
     public static void main(String[] args) {
 

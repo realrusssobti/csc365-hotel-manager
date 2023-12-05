@@ -110,7 +110,7 @@ public class MainFrame extends Frame {
         ReservationPanel reservationPanel = new ReservationPanel();
         ReservationPanel.addDummyData(reservationPanel);
         RoomKeyPanel roomKeyPanel = new RoomKeyPanel(sqlConnection);
-        CheckInOutPanel checkInOutPanel = new CheckInOutPanel();
+        CheckInOutPanel checkInOutPanel = new CheckInOutPanel(sqlConnection);
         BillCustomerPanel billCustomerPanel = new BillCustomerPanel();
         CustomerManager customerManagerPanel = new CustomerManager(sqlConnection);
         HotelSplashScreen hotelSplashScreen = new HotelSplashScreen();
