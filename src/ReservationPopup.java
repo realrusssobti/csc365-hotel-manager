@@ -7,7 +7,6 @@ import java.awt.event.WindowEvent;
 import java.time.LocalDate;
 
 public class ReservationPopup extends Frame {
-    private final TextField reservationIDField;
     private final TextField customerIDField;
     private final TextField roomIDField;
     private String checkInDate;
@@ -17,9 +16,6 @@ public class ReservationPopup extends Frame {
 
     public ReservationPopup() {
         setLayout(new GridLayout(6, 2));
-
-        Label reservationIDLabel = new Label("Reservation ID:");
-        reservationIDField = new TextField();
 
         Label customerIDLabel = new Label("Customer ID:");
         customerIDField = new TextField();
@@ -35,9 +31,6 @@ public class ReservationPopup extends Frame {
 
         Button makeReservationButton = new Button("Make Reservation");
         makeReservationButton.addActionListener(new ReservationButtonListener());
-
-        add(reservationIDLabel);
-        add(reservationIDField);
 
         add(customerIDLabel);
         add(customerIDField);
