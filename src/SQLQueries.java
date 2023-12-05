@@ -92,17 +92,17 @@ public class SQLQueries {
                 statement.setDate(2, givenCheckOut);
                 ResultSet rs = statement.executeQuery();
                 while (rs.next()) {
-                    String first_name = rs.getString("FirstName");
-                    String last_name = rs.getString("LastName");
-                    Date check_in_obj = rs.getDate("CheckInDate");
-                    String check_in_date = check_in_obj.toString(); // convert to string
-                    Date check_out_obj = rs.getDate("CheckOutDate");
-                    String check_out_date = check_out_obj.toString(); // convert to string
-                    String room_type = rs.getString("RoomType");
-                    int booking_id_obj     = rs.getInt("BookingID"); 
-                    String bookingID      = Integer.toString(booking_id_obj); // convert to string
-                    int guest_id_obj     = rs.getInt("GuestID"); 
-                    String guestID      = Integer.toString(guest_id_obj); // convert to string
+                    String first_name       = rs.getString("FirstName");
+                    String last_name        = rs.getString("LastName");
+                    Date check_in_obj       = rs.getDate("CheckInDate");
+                    String check_in_date    = check_in_obj.toString(); // convert to string
+                    Date check_out_obj      = rs.getDate("CheckOutDate");
+                    String check_out_date   = check_out_obj.toString(); // convert to string
+                    String room_type        = rs.getString("RoomType");
+                    int booking_id_obj      = rs.getInt("BookingID"); 
+                    String bookingID        = Integer.toString(booking_id_obj); // convert to string
+                    int guest_id_obj        = rs.getInt("GuestID"); 
+                    String guestID          = Integer.toString(guest_id_obj); // convert to string
                     int room_number_obj     = rs.getInt("RoomNumber"); 
                     String room_number      = Integer.toString(room_number_obj); // convert to string
                     Collections.addAll(tuple, first_name, last_name, check_in_date, check_out_date, room_type, bookingID, guestID, room_number);
@@ -140,21 +140,9 @@ public class SQLQueries {
                     String first_name       = rs.getString("FirstName");
                     String last_name        = rs.getString("LastName");
                     Date check_out_obj      = rs.getDate("CheckOutDate");
-                    String check_out_date   ; // convert to string
-                    if (check_out_obj == null) {
-                         check_out_date = new Date(0).toString();
-                    }
-                    else { check_out_date   = check_out_obj.toString(); // convert to string
-                    }
-
-                    Date check_in_obj      = rs.getDate("CheckOutDate");
-                    String check_in_date   ; // convert to string
-                    if (check_in_obj == null) {
-                         check_in_date = new Date(0).toString();
-                    }
-                    else { check_in_date   = check_in_obj.toString(); // convert to string
-                    }
-
+                    String check_out_date   = check_out_obj.toString(); // convert to string
+                    Date check_in_obj       = rs.getDate("CheckOutDate");
+                    String check_in_date    = check_in_obj.toString(); // convert to string
                     Collections.addAll(tuple, room_number, room_type, room_price, key_count, first_name, last_name, check_out_date, check_in_date);
                     table.add(tuple); // add new tuple to table list
                 }
@@ -233,7 +221,6 @@ public class SQLQueries {
                     }
                     else { check_in_date   = check_in_obj.toString(); // convert to string
                     }
-
                     Collections.addAll(tuple, room_number, room_type, room_price, key_count, first_name, last_name, check_out_date, check_in_date);
                 }
             }
