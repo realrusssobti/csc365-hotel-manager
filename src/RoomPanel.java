@@ -3,6 +3,8 @@ import com.sun.tools.javac.Main;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -63,6 +65,8 @@ public class RoomPanel extends Panel {
         @Override
         public void actionPerformed(ActionEvent e) {
 
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
             //Uncomment when connection works
             ArrayList<String> room_info = sqlConnection.getRoomStatus(room.getRoomNumber());
             // print out the room info
@@ -71,9 +75,18 @@ public class RoomPanel extends Panel {
             }
 
             System.out.println("Room " + room.getRoomNumber() + " clicked!");
-//            RoomStatusPopup popup = new RoomStatusPopup(String.valueOf(room.getRoomNumber()), false, 3, "John Doe", "2023-12-15");
+            //RoomStatusPopup popup = new RoomStatusPopup(String.valueOf(room.getRoomNumber()), false, 3, "John Doe", "2023-12-15");
             //uncomment and delete prev line when connection works
-            RoomStatusPopup popup = new RoomStatusPopup(String.valueOf(room.getRoomNumber()), false, Integer.parseInt(room_info.get(3)), room_info.get(4) + room_info.get(5), room_info.get(6));
+
+            String guest_name = room_info.get(4) + room_info.get(5);
+            int num_keys = Integer.parseInt(room_info.get(3));
+            String check_out_date_string = room_info.get(6);
+            
+            boolean isTaken = false;
+            LocalDate curr_date = LocalDate.now();
+            LocalDate check_in_date = LocalDate.parse(room_info.get(7), formatter);
+
+            RoomStatusPopup popup = new RoomStatusPopup(String.valueOf(room.getRoomNumber()), isTaken, num_keys, guest_name, check_out_date_string);
             popup.setSize(300, 500);
             popup.setVisible(true);
         }

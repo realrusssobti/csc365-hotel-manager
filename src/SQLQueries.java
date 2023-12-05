@@ -119,7 +119,7 @@ public class SQLQueries {
     public ArrayList<ArrayList<String>> getRoomStatus() {
         ArrayList<ArrayList<String>> table = new ArrayList<>();
         try {
-            String query = "SELECT R.RoomNumber, R.RoomType, R.RoomPrice, COUNT(K.RoomKeyID) AS KeyCount, G.FirstName, G.LastName, B.CheckOutDate " +
+            String query = "SELECT R.RoomNumber, R.RoomType, R.RoomPrice, COUNT(K.RoomKeyID) AS KeyCount, G.FirstName, G.LastName, B.CheckOutDate, B.CheckInDate " +
                     "FROM Room R " +
                     "LEFT JOIN Booking B ON R.RoomNumber = B.RoomNumber " +
                     "LEFT JOIN Guest G ON G.GuestID = B.GuestID " +
@@ -145,8 +145,17 @@ public class SQLQueries {
                          check_out_date = new Date(0).toString();
                     }
                     else { check_out_date   = check_out_obj.toString(); // convert to string
-                         }
-                    Collections.addAll(tuple, room_number, room_type, room_price, key_count, first_name, last_name, check_out_date);
+                    }
+
+                    Date check_in_obj      = rs.getDate("CheckOutDate");
+                    String check_in_date   ; // convert to string
+                    if (check_in_obj == null) {
+                         check_in_date = new Date(0).toString();
+                    }
+                    else { check_in_date   = check_in_obj.toString(); // convert to string
+                    }
+
+                    Collections.addAll(tuple, room_number, room_type, room_price, key_count, first_name, last_name, check_out_date, check_in_date);
                     table.add(tuple); // add new tuple to table list
                 }
             }
@@ -190,7 +199,7 @@ public class SQLQueries {
     public ArrayList<String> getRoomStatus(int givenRoomNumber) {
         ArrayList<String> tuple = new ArrayList<>();
         try {
-            String query = "SELECT R.RoomNumber, R.RoomType, R.RoomPrice, COUNT(K.RoomKeyID) AS KeyCount, G.FirstName, G.LastName, B.CheckOutDate " +
+            String query = "SELECT R.RoomNumber, R.RoomType, R.RoomPrice, COUNT(K.RoomKeyID) AS KeyCount, G.FirstName, G.LastName, B.CheckOutDate, B.CheckInDate " +
                     "FROM Room R " +
                     "LEFT JOIN Booking B ON R.RoomNumber = B.RoomNumber " +
                     "LEFT JOIN Guest G ON G.GuestID = B.GuestID " +
@@ -216,7 +225,16 @@ public class SQLQueries {
                     }
                     else { check_out_date   = check_out_obj.toString(); // convert to string
                          }
-                    Collections.addAll(tuple, room_number, room_type, room_price, key_count, first_name, last_name, check_out_date);
+
+                    Date check_in_obj      = rs.getDate("CheckOutDate");
+                    String check_in_date   ; // convert to string
+                    if (check_in_obj == null) {
+                         check_in_date = new Date(0).toString();
+                    }
+                    else { check_in_date   = check_in_obj.toString(); // convert to string
+                    }
+
+                    Collections.addAll(tuple, room_number, room_type, room_price, key_count, first_name, last_name, check_out_date, check_in_date);
                 }
             }
         } catch (SQLException e) {
