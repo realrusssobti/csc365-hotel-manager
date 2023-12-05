@@ -26,8 +26,8 @@ public class HotelSplashScreen extends JPanel {
         add(logoLabel, BorderLayout.CENTER);
 
         // Add hotel name label
-        JLabel hotelNameLabel = new JLabel("Welcome to Your Hotel Name");
-        hotelNameLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        JLabel hotelNameLabel = new JLabel("Welcome to The SLO Hotel");
+        hotelNameLabel.setFont(new Font("Arial", Font.BOLD, 40));
         hotelNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(hotelNameLabel, BorderLayout.SOUTH);
 
@@ -46,7 +46,7 @@ public class HotelSplashScreen extends JPanel {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             // Create a JFrame and set its properties
-            JFrame frame = new JFrame("Hotel Splash Screen");
+            JFrame frame = new JFrame("SLO Hotel Management System");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(1600, 900);
             frame.setLayout(new BorderLayout());
