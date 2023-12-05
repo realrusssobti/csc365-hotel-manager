@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class CheckInOutPanel extends Panel {
 
-    private final ArrayList<Reservation> reservations;
+    private final ArrayList<Reservation> reservations_to_checkin;
     private SQLQueries sqlConnection;
 
     public CheckInOutPanel(SQLQueries sqlConnection) {
@@ -21,7 +21,7 @@ public class CheckInOutPanel extends Panel {
 
         //getting upcoming reservations from db (reservations with check-in date later than current date)
         ArrayList<ArrayList<String>> reservations_info = sqlConnection.getReservationsBeyondDate(curr_date);
-        this.reservations = MainFrame.parseReservationObjects(reservations_info);
+        this.reservations_to_checkin = MainFrame.parseReservationObjects(reservations_info);
 
         setLayout(new GridLayout(2, 1));
 
@@ -30,6 +30,14 @@ public class CheckInOutPanel extends Panel {
 
         Panel checkInReservationPanel = createCheckInReservationPanel();
         add(checkInReservationPanel);
+    }
+
+    //just to get past compile error for main method below that isnt used in actual run
+    public CheckInOutPanel() {
+        this.reservations_to_checkin = new ArrayList<>();
+        reservations_to_checkin.add(new Reservation(1, 101, 1, LocalDate.now(), null)); // Replace null with actual check-out date
+        reservations_to_checkin.add(new Reservation(2, 102, 2, null, null)); // Replace null with actual check-in date
+
     }
 
     private Button createCheckOutButton(Reservation reservation) {
@@ -56,10 +64,11 @@ public class CheckInOutPanel extends Panel {
         // Update reservation status or perform necessary actions
     }
 
+    //This might need modification to display rooms that have been checked in
     private Panel createCheckedInPanel() {
         Panel checkedInPanel = new Panel(new GridLayout(0, 2));
 
-        for (Reservation reservation : reservations) {
+        for (Reservation reservation : reservations_to_checkin) {
             if (reservation.getCheckInDate() != null && reservation.getCheckOutDate() == null) {
                 Label roomLabel = new Label("Room " + reservation.getRoomNumber());
                 Button checkOutButton = createCheckOutButton(reservation);
@@ -75,7 +84,7 @@ public class CheckInOutPanel extends Panel {
     private Panel createCheckInReservationPanel() {
         Panel checkInReservationPanel = new Panel(new GridLayout(0, 2));
 
-        for (Reservation reservation : reservations) {
+        for (Reservation reservation : reservations_to_checkin) {
             if (reservation.getCheckInDate() == null) {
                 Label reservationLabel = new Label("Reservation " + reservation.getReservationID());
                 Button checkInButton = createCheckInButton(reservation);
