@@ -41,6 +41,10 @@ public class CheckInOutPanel extends Panel {
 
     private void performCheckOut(Reservation reservation) {
         reservation.setCheckOutDate(LocalDate.now()); // Set the check-out date
+        reservation.setCheckedIn(false);
+
+        LocalDate today = LocalDate.now();
+        sqlConnection.setReservationCheckOut(today, reservation.getReservationID());
         System.out.println("Checked out Room " + reservation.getRoomNumber());
         // Update room status or perform necessary actions
     }
@@ -54,6 +58,7 @@ public class CheckInOutPanel extends Panel {
     private void performCheckIn(Reservation reservation) {
         reservation.setCheckInDate(LocalDate.now()); // Set the check-in date
         reservation.setCheckedIn(true);
+        
         LocalDate today = LocalDate.now();
         sqlConnection.setReservationCheckIn(today, reservation.getReservationID());
         System.out.println("Checked in Reservation " + reservation.getReservationID());
@@ -68,7 +73,6 @@ public class CheckInOutPanel extends Panel {
             if (reservation.getCheckedIn() == true) {
                 Label roomLabel = new Label("Room " + reservation.getRoomNumber());
                 Button checkOutButton = createCheckOutButton(reservation);
-
                 checkedInPanel.add(roomLabel);
                 checkedInPanel.add(checkOutButton);
             }
