@@ -55,7 +55,7 @@ public class RoomStatusPopup extends Frame {
         makeReservationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                BookingRoomPopup reservationPopup = new BookingRoomPopup(roomNumber);
+                ReservationPopup reservationPopup = new ReservationPopup(sqlConnection);
                 reservationPopup.setSize(600, 400);
                 reservationPopup.setVisible(true);
             }

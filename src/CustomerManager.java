@@ -60,7 +60,7 @@ public class CustomerManager extends JPanel {
                 // For simplicity, let's just print a message for now
                 System.out.println("Add Customer button clicked");
                 // Render a AddCustomer as a popup
-                AddCustomer addCustomer = new AddCustomer(sqlConnection);
+                AddCustomer addCustomer = new AddCustomer(sqlConnection, tableModel);
                 addCustomer.setVisible(true);
 
             }
@@ -74,6 +74,16 @@ public class CustomerManager extends JPanel {
 
         // Set preferred size of the panel
         setPreferredSize(new Dimension(800, 600));
+        // Swing timer to refresh data every 5 seconds
+        Timer timer = new Timer(5000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Refresh data
+                System.out.println("Refreshing data...");
+                // Repaint everything
+                refreshData();
+            }
+        });
     }
 
     private void setColumnWidths() {
@@ -109,33 +119,7 @@ public class CustomerManager extends JPanel {
 
             tableModel.addRow(new_row);
         }
-        // // Add some mock data for testing
-        // Vector<Object> row1 = new Vector<>();
-        // row1.add(1);
-        // row1.add("John");
-        // row1.add("Doe");
-        // row1.add("john.doe@example.com");
-        // row1.add("123-456-7890");
-        // row1.add("123 Main St");
-        // row1.add("Cityville");
-        // row1.add("CA");
-        // row1.add("12345");
 
-        // Vector<Object> row2 = new Vector<>();
-        // row2.add(2);
-        // row2.add("Jane");
-        // row2.add("Smith");
-        // row2.add("jane.smith@example.com");
-        // row2.add("987-654-3210");
-        // row2.add("456 Oak St");
-        // row2.add("Townton");
-        // row2.add("NY");
-        // row2.add("54321");
-
-        
-
-        // tableModel.addRow(row1);
-        // tableModel.addRow(row2);
     }
 
     // Custom renderer for the "Delete Customer" button
@@ -219,5 +203,13 @@ public class CustomerManager extends JPanel {
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });
+    }
+
+    /* Refresh Data */
+    public void refreshData() {
+        // Clear the table
+        tableModel.setRowCount(0);
+        // Get the latest data from the database and add it to the table
+        getData();
     }
 }

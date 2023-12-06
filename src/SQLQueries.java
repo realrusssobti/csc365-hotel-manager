@@ -1001,4 +1001,23 @@ public class SQLQueries {
         }
         return roomIDs;
     }
+
+    public int getCustomerID(String firstName, String lastName) {
+        // Get the first customer with the given name
+        int customerID = -1;
+        try {
+            String query = "SELECT GuestID FROM Guest WHERE FirstName = ? AND LastName = ?;";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, firstName);
+                statement.setString(2, lastName);
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    customerID = rs.getInt("GuestID");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customerID;
+    }
 }

@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,10 +16,12 @@ public class AddCustomer extends JFrame {
     private JTextField stateField;
     private JTextField zipField;
     private SQLQueries connection;
+    private DefaultTableModel tableModel;
 
-    public AddCustomer(SQLQueries connection) {
+    public AddCustomer(SQLQueries connection, DefaultTableModel tableModel) {
         initializeComponents();
         this.connection = connection;
+        this.tableModel = tableModel;
     }
 
     private void initializeComponents() {
@@ -85,6 +89,8 @@ public class AddCustomer extends JFrame {
 
                 // Add the customer to the database
                 connection.addCustomer(firstName, lastName, email, phone, address, city, state, zip);
+                int ID = connection.getCustomerID(firstName, lastName);
+                tableModel.addRow(new Object[]{ID, firstName, lastName, email, phone, address, city, state, zip});
 
                 // Close the pop-up frame
                 dispose();
@@ -103,7 +109,7 @@ public class AddCustomer extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            AddCustomer addCustomer = new AddCustomer(new SQLQueries());
+            AddCustomer addCustomer = new AddCustomer(new SQLQueries(), new DefaultTableModel());
             addCustomer.setLocationRelativeTo(null);
             addCustomer.setVisible(true);
         });
