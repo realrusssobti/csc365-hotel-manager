@@ -283,6 +283,19 @@ public class SQLQueries {
         return table;
     }
 
+    public void setReservationCheckIn(LocalDate check_in_date, int bookingID){
+        try {
+            String query = "UPDATE Booking SET CheckInDate = ? WHERE BookingID=?;";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setDate(1, Date.valueOf(check_in_date));
+                statement.setInt(2, bookingID);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // returns a list of tuples: room number, room type, num of keys, customer name, checkout date
     public ArrayList<ArrayList<String>> getRoomStatus() {
