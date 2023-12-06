@@ -4,13 +4,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class BillCustomerPanel extends Panel {
     private final Choice customerChoice;
-    private final Choice reservationChoice;
     private SQLQueries sqlConnection;
 
     public BillCustomerPanel(SQLQueries sqlConnection) {
@@ -35,11 +33,6 @@ public class BillCustomerPanel extends Panel {
         customerPanel.add(customerChoice);
 
         // Create a panel for the "Select Reservation" components
-        Panel reservationPanel = new Panel(new GridLayout(1, 2));
-        Label reservationLabel = new Label("Select Reservation:");
-        reservationChoice = createReservationChoice();
-        reservationPanel.add(reservationLabel);
-        reservationPanel.add(reservationChoice);
 
         // Create GridBagConstraints for the customerPanel
         GridBagConstraints customerPanelConstraints = new GridBagConstraints();
@@ -48,12 +41,6 @@ public class BillCustomerPanel extends Panel {
         customerPanelConstraints.insets = new Insets(0, 0, 10, 0); // Padding: top, left, bottom, right
         add(customerPanel, customerPanelConstraints);
 
-        // Create GridBagConstraints for the reservationPanel
-        GridBagConstraints reservationPanelConstraints = new GridBagConstraints();
-        reservationPanelConstraints.gridx = 0;
-        reservationPanelConstraints.gridy = 2;
-        reservationPanelConstraints.insets = new Insets(10, 0, 10, 0); // Padding: top, left, bottom, right
-        add(reservationPanel, reservationPanelConstraints);
 
         JButton generateBillButton = new JButton("Generate Bill");
         generateBillButton.addActionListener(new GenerateBillButtonListener());
@@ -81,8 +68,15 @@ public class BillCustomerPanel extends Panel {
 
         for (int i=0; i<customers_info.size(); i++){
             ArrayList<String> customer = customers_info.get(i);
+<<<<<<< HEAD
             String cust = String.valueOf(customer.get(0)) + " " + customer.get(1);
             choice.add(cust);
+=======
+//            choice.add(customer.get(6));
+            // Get the customer name
+            String customerName = customer.get(1) + " " + customer.get(2);
+            choice.add(customerName);
+>>>>>>> 30f9adaf8915dc1616312346cb788c6f01c963a6
         }
         return choice;
     }
@@ -116,13 +110,13 @@ public class BillCustomerPanel extends Panel {
             // extract id from cust input
             ArrayList<ArrayList<String>> reservationsForBilling = sqlConnection.getReservationByCustomer_Billing(selectedCustomer, Date.valueOf(today));
 
-            for (int i=0; i<reservationsForBilling.size(); i++){
+            for (int i = 0; i < reservationsForBilling.size(); i++) {
                 ArrayList<String> curr_reservation = reservationsForBilling.get(i);
         
                 LocalDate checkinDate = LocalDate.parse(curr_reservation.get(2));
                 LocalDate checkOutDate = LocalDate.parse(curr_reservation.get(3));
 
-                int days_stayed = (int) ChronoUnit.DAYS.between(checkinDate, checkOutDate);
+                int days_stayed = checkinDate.until(checkOutDate).getDays();
                 int amount_to_pay = Integer.parseInt(curr_reservation.get(8)) * days_stayed;
 
                 //get room price
