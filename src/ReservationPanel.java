@@ -5,11 +5,15 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
+import java.time.LocalDate;
 
 public class ReservationPanel extends JPanel {
     private JTable reservationTable;
     private DefaultTableModel tableModel;
     private SQLQueries sqlConnection;
+    private Date startDate = Date.valueOf(LocalDate.now());
+    private Date endDate = Date.valueOf(LocalDate.now().plusDays(9999));
 
     public ReservationPanel(SQLQueries sqlConnection) {
         this.sqlConnection = sqlConnection;
@@ -24,7 +28,24 @@ public class ReservationPanel extends JPanel {
         // Buttons Panel
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         JButton createReservationButton = new JButton("Create Reservation");
+//        JButton selectDatesButton = new JButton("Select Dates");
+        // Date picker
+        DatePicker StartDatePicker = new DatePicker();
+        DatePicker EndDatePicker = new DatePicker();
+        add(StartDatePicker, BorderLayout.WEST);
+        add(EndDatePicker, BorderLayout.EAST);
+
         JButton selectDatesButton = new JButton("Select Dates");
+        selectDatesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Set the start and end dates
+                startDate = Date.valueOf(StartDatePicker.getDate());
+                endDate = Date.valueOf(EndDatePicker.getDate());
+                // Refresh the table
+                getReservationData(ReservationPanel.this, sqlConnection, startDate, endDate);
+            }
+        });
 
         createReservationButton.addActionListener(new ActionListener() {
             @Override
@@ -39,32 +60,6 @@ public class ReservationPanel extends JPanel {
             }
         });
 
-        selectDatesButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Implement action for "Select Dates" button
-                JOptionPane.showMessageDialog(ReservationPanel.this, "Select Dates Button Clicked");
-                // Render a StartEndDatePicker as a popup
-                Frame frame = new Frame();
-                frame.setSize(600, 400);
-                frame.setLocationRelativeTo(null);
-                StartEndDatePicker startEndDatePicker = new StartEndDatePicker();
-                frame.add(startEndDatePicker);
-                frame.setVisible(true);
-                // listen for the submit button to be clicked
-                startEndDatePicker.submitButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // Perform any action needed before closing the window
-                        System.out.println("Selected Start Date exposed: " + startEndDatePicker.getStartDate());
-                        System.out.println("Selected End Date exposed: " + startEndDatePicker.getEndDate());
-
-                        // Close the window
-                        frame.dispose();
-                    }
-                });
-            }
-        });
 
         buttonsPanel.add(createReservationButton);
         buttonsPanel.add(selectDatesButton);
@@ -79,6 +74,9 @@ public class ReservationPanel extends JPanel {
             }
         };
         reservationTable = new JTable(tableModel);
+
+        // fetch data from database
+        getReservationData(this, sqlConnection, new Date(120, 01, 01), new Date(125, 01, 01));
 
         // Add buttons to the "Check In/Out" column
         TableColumn checkInOutColumn = reservationTable.getColumnModel().getColumn(5);
@@ -104,13 +102,13 @@ public class ReservationPanel extends JPanel {
         }
     }
 
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Reservation Panel Example");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             ReservationPanel reservationPanel = new ReservationPanel(new SQLQueries());
-            addDummyData(reservationPanel);
             frame.getContentPane().add(reservationPanel);
 
             frame.setSize(1600, 900);
@@ -191,4 +189,21 @@ public class ReservationPanel extends JPanel {
             return super.stopCellEditing();
         }
     }
+
+    private static void getReservationData(ReservationPanel panel, SQLQueries sqlConnection, Date startDate, Date endDate) {
+        DefaultTableModel tableModel = panel.tableModel;
+        String[][] reservationData = sqlConnection.getReservationData(startDate, endDate);
+        // clear the table
+        tableModel.setRowCount(0);
+        // add the new data
+        for (String[] row : reservationData) {
+            System.out.println(row[0] + " " + row[1] + " " + row[2] + " " + row[3]);
+            // Append the "Check In/Out" button to the end of the row
+            Object[] newRow = {row[0], row[1], row[2], row[3], row[4], "Check In/Out"};
+            tableModel.addRow(newRow);
+
+        }
+
+    }
 }
+

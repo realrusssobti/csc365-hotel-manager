@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.time.LocalDate;
 
 public class DatePicker extends Panel {
 
@@ -54,6 +55,12 @@ public class DatePicker extends Panel {
         setSize(300, 100);
         setVisible(true);
 
+    }
+
+    public LocalDate getDate() {
+        return LocalDate.of(Integer.parseInt(yearChoice.getSelectedItem()),
+                Integer.parseInt(monthChoice.getSelectedItem()),
+                Integer.parseInt(dayChoice.getSelectedItem()));
     }
 
     private class ItemChangeListener implements ItemListener {

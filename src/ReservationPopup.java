@@ -9,9 +9,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class ReservationPopup extends Frame {
-    private final TextField customerIDField;
+    private Choice customerIDChoice;
+    private TextField customerIDField;
+
+    private final Choice roomIDChoice;
     private final TextField roomIDField;
-    private final TextField reservationIDField;
     private String checkInDate;
     private DatePicker CheckInDatePanel;
     private String checkOutDate;
@@ -23,13 +25,55 @@ public class ReservationPopup extends Frame {
         setLayout(new GridLayout(6, 2));
 
         Label customerIDLabel = new Label("Customer ID:");
+        // {Customer ID, Name} -> Show name in the dropdown and use ID as the value
+        // Get customer Names and IDs from the database
+        ArrayList<String[]> customerNamesAndIDs = sqlConnection.getCustomerNamesAndIDs();
+        // Create a Choice component for the customer IDs
+        customerIDChoice = new Choice();
         customerIDField = new TextField();
 
-        Label reservationIDLabel = new Label("Reservation ID:");
-        reservationIDField = new TextField();
+        // Add the customer names to the Choice
+        for (String[] customer : customerNamesAndIDs) {
+            customerIDChoice.add(customer[1]);
+        }
+        // Add an ItemListener to the Choice to get the selected customer ID
+        customerIDChoice.addItemListener(e -> {
+            // Get the selected customer name
+            String selectedCustomerName = customerIDChoice.getSelectedItem();
+            // Find the customer ID that corresponds to the selected name
+            for (String[] customer : customerNamesAndIDs) {
+                if (customer[1].equals(selectedCustomerName)) {
+                    // Set the customer ID field to the selected customer ID
+                    customerIDField.setText(customer[0]);
+                    break;
+                }
+            }
+        });
+        add(customerIDLabel);
+        add(customerIDChoice);
+        add(customerIDField);
+
 
         Label roomIDLabel = new Label("Room ID:");
+        roomIDChoice = new Choice();
         roomIDField = new TextField();
+// Get room IDs from the database
+        ArrayList<String[]> roomIDs = sqlConnection.getRoomIDs();
+        // Add the room IDs to the Choice
+        for (String[] room : roomIDs) {
+            roomIDChoice.add(room[0]);
+        }
+// Add an ItemListener to the Choice to get the selected room ID
+        roomIDChoice.addItemListener(e -> {
+            // Get the selected room ID
+            String selectedRoomID = roomIDChoice.getSelectedItem();
+            // Set the room ID field to the selected room ID
+            roomIDField.setText(selectedRoomID);
+        });
+        add(roomIDLabel);
+        add(roomIDChoice);
+        add(roomIDField);
+
 
         Label checkInLabel = new Label("Check-In Date (yyyy-MM-dd):");
         CheckInDatePanel = new DatePicker();
@@ -40,8 +84,6 @@ public class ReservationPopup extends Frame {
         Button makeReservationButton = new Button("Make Reservation");
         makeReservationButton.addActionListener(new ReservationButtonListener());
 
-        add(reservationIDLabel);
-        add(reservationIDField);
 
         add(customerIDLabel);
         add(customerIDField);
@@ -68,22 +110,11 @@ public class ReservationPopup extends Frame {
 
 
     // just empty constructor for main method tht wont get run in demo (isolation testing. dont do it tho. it wont work)
-    public ReservationPopup() {
-        Label customerIDLabel = new Label("Customer ID:");
-        customerIDField = new TextField();
-
-        Label reservationIDLabel = new Label("Reservation ID:");
-        reservationIDField = new TextField();
-
-        Label roomIDLabel = new Label("Room ID:");
-        roomIDField = new TextField();
-    }
 
     private class ReservationButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                int reservationID = Integer.parseInt(reservationIDField.getText());
                 int customerID = Integer.parseInt(customerIDField.getText());
                 int roomID = Integer.parseInt(roomIDField.getText());
 
@@ -93,8 +124,6 @@ public class ReservationPopup extends Frame {
                 LocalDate checkInDateLocal = LocalDate.parse(checkInDate);
                 LocalDate checkOutDateLocal = LocalDate.parse(checkOutDate);
 
-                // Create a new Reservation object with the input data
-                Reservation newReservation = new Reservation(reservationID, customerID, roomID, checkInDateLocal, checkOutDateLocal);
 
                 // modify db to add the reservation
                 ArrayList<String> customer_info = sqlConnection.getCustomerInfo(String.valueOf(customerID));
@@ -103,11 +132,11 @@ public class ReservationPopup extends Frame {
                 // Perform operations with the new reservation (e.g., save to database)
                 // For demonstration purposes, you can print the new reservation details
                 System.out.println("New Reservation Details:");
-                System.out.println("Reservation ID: " + newReservation.getReservationID());
-                System.out.println("Customer ID: " + newReservation.getCustomerID());
-                System.out.println("Room ID: " + newReservation.getRoomNumber());
-                System.out.println("Check-In Date: " + newReservation.getCheckInDate());
-                System.out.println("Check-Out Date: " + newReservation.getCheckOutDate());
+                System.out.println("Customer ID: " + customerID);
+                System.out.println("Room ID: " + roomID);
+                System.out.println("Check-In Date: " + checkInDate);
+                System.out.println("Check-Out Date: " + checkOutDate);
+                System.out.println("Reservation added to database.");
             } catch (NumberFormatException ex) {
                 System.err.println("Invalid input format for IDs. Please enter valid numbers.");
             } catch (Exception ex) {
@@ -118,9 +147,10 @@ public class ReservationPopup extends Frame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            ReservationPopup reservationPopup = new ReservationPopup();
+            ReservationPopup reservationPopup = new ReservationPopup(new SQLQueries());
             reservationPopup.setSize(400, 300);
             reservationPopup.setVisible(true);
         });
     }
 }
+

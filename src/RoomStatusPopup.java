@@ -9,13 +9,23 @@ public class RoomStatusPopup extends Frame {
     private final int numberOfKeys;
     private final String customerName;
     private final String checkoutDate;
+    private SQLQueries sqlConnection;
 
-    public RoomStatusPopup(String roomNumber, boolean isTaken, int numberOfKeys, String customerName, String checkoutDate) {
+    public RoomStatusPopup(String roomNumber, SQLQueries sqlConnection) {
         this.roomNumber = roomNumber;
-        this.isTaken = isTaken;
-        this.numberOfKeys = numberOfKeys;
-        this.customerName = customerName;
-        this.checkoutDate = checkoutDate;
+        this.sqlConnection = sqlConnection;
+        // get the room status from the database
+        this.isTaken = sqlConnection.isRoomTaken(Integer.parseInt(roomNumber));
+        this.numberOfKeys = sqlConnection.getNumberOfKeys(Integer.parseInt(roomNumber));
+        this.customerName = sqlConnection.getCustomerName(Integer.parseInt(roomNumber));
+        this.checkoutDate = String.valueOf(sqlConnection.getCheckoutDate(Integer.parseInt(roomNumber)));
+        // print out the room info
+        System.out.println("Room " + roomNumber + " clicked!");
+        System.out.println("Room is taken: " + isTaken);
+        System.out.println("Number of keys: " + numberOfKeys);
+        System.out.println("Customer name: " + customerName);
+        System.out.println("Checkout date: " + checkoutDate);
+
 
         initializeComponents();
     }
@@ -69,7 +79,7 @@ public class RoomStatusPopup extends Frame {
     public static void main(String[] args) {
         // Dummy testing view
         EventQueue.invokeLater(() -> {
-            RoomStatusPopup roomStatusPopup = new RoomStatusPopup("101", true, 3, "John Doe", "2023-12-15");
+            RoomStatusPopup roomStatusPopup = new RoomStatusPopup("101", new SQLQueries());
             roomStatusPopup.showPopup();
         });
     }

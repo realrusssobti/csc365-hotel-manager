@@ -630,4 +630,170 @@ public class SQLQueries {
         }
     }
 
+    public static boolean isRoomTaken(int roomNumber) {
+        try {
+            // get today's date
+            LocalDate today = LocalDate.now();
+            // convert to sql date
+            Date sqlToday = Date.valueOf(today);
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Booking WHERE RoomNumber = ? AND CheckInDate <= ? AND CheckOutDate >= ?;");
+            statement.setInt(1, roomNumber);
+            statement.setDate(2, sqlToday);
+            statement.setDate(3, sqlToday);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /* getNumberOfKeys
+     * @param roomNumber: the room number
+     * @return: the number of keys for the room
+     */
+    public static int getNumberOfKeys(int roomNumber) {
+        int numberOfKeys = 0;
+        try {
+            String query = "SELECT COUNT(RoomKeyID) AS KeyCount FROM RoomKey WHERE RoomNumber = ?;";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, roomNumber);
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    numberOfKeys = rs.getInt("KeyCount");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return numberOfKeys;
+    }
+
+    /* getCustomerName
+     * @param roomNumber: the room number
+     * @return: the name of the customer
+     */
+    public static String getCustomerName(int roomNumber) {
+        String customerName = "";
+        LocalDate today = LocalDate.now();
+        Date sqlToday = Date.valueOf(today);
+        try {
+            String query = "SELECT FirstName, LastName FROM Guest WHERE GuestID = (SELECT GuestID FROM Booking WHERE RoomNumber = ? AND CheckInDate <= ? AND CheckOutDate >= ?);";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, roomNumber);
+                statement.setDate(2, sqlToday);
+                statement.setDate(3, sqlToday);
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    String firstName = rs.getString("FirstName");
+                    String lastName = rs.getString("LastName");
+                    customerName = firstName + " " + lastName;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customerName;
+    }
+
+    /* Get the checkout date for a room
+     * @param roomNumber: the room number
+     * @return: the checkout date
+     */
+    public static Date getCheckoutDate(int roomNumber) {
+        Date checkoutDate = null;
+        LocalDate today = LocalDate.now();
+        Date sqlToday = Date.valueOf(today);
+        try {
+            String query = "SELECT CheckOutDate FROM Booking WHERE RoomNumber = ? AND CheckInDate <= ? AND CheckOutDate >= ?;";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, roomNumber);
+                statement.setDate(2, sqlToday);
+                statement.setDate(3, sqlToday);
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    checkoutDate = rs.getDate("CheckOutDate");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return checkoutDate;
+    }
+
+    public String[][] getReservationData(Date startDate, Date endDate) {
+        System.out.println("Getting reservation data for dates: " + startDate + " to " + endDate);
+        String statement;
+        ArrayList<String> reservations = new ArrayList<>();
+        // Get all reservations between the given dates
+        statement = "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType " +
+                "FROM Booking B, Guest G, Room R " +
+                "WHERE B.GuestID = G.GuestID AND B.RoomNumber = R.RoomNumber " +
+                "AND B.CheckInDate >= ? AND B.CheckOutDate <= ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(statement);
+            preparedStatement.setDate(1, startDate);
+            preparedStatement.setDate(2, endDate);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                String firstName = rs.getString("FirstName");
+                String lastName = rs.getString("LastName");
+                Date checkInDate = rs.getDate("CheckInDate");
+                Date checkOutDate = rs.getDate("CheckOutDate");
+                String roomType = rs.getString("RoomType");
+                reservations.add(firstName + "," + lastName + "," + checkInDate + "," + checkOutDate + "," + roomType);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // Convert to 2D array
+        String[][] reservationData = new String[reservations.size()][];
+        for (int i = 0; i < reservations.size(); i++) {
+            System.out.println("Got reservation: " + reservations.get(i));
+            reservationData[i] = reservations.get(i).split(",");
+        }
+        return reservationData;
+
+    }
+
+    public ArrayList<String[]> getCustomerNamesAndIDs() {
+        ArrayList<String[]> customerNamesAndIDs = new ArrayList<>();
+        try {
+            String query = "SELECT GuestID, FirstName, LastName FROM Guest;";
+            try (Statement statement = connection.createStatement()) {
+                ResultSet rs = statement.executeQuery(query);
+                while (rs.next()) {
+                    String guestID = rs.getString("GuestID");
+                    String firstName = rs.getString("FirstName");
+                    String lastName = rs.getString("LastName");
+                    String[] customerNameAndID = {guestID, firstName + " " + lastName};
+                    customerNamesAndIDs.add(customerNameAndID);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customerNamesAndIDs;
+    }
+
+    public ArrayList<String[]> getRoomIDs() {
+        ArrayList<String[]> roomIDs = new ArrayList<>();
+        try {
+            String query = "SELECT RoomNumber FROM Room;";
+            try (Statement statement = connection.createStatement()) {
+                ResultSet rs = statement.executeQuery(query);
+                while (rs.next()) {
+                    String roomID = rs.getString("RoomNumber");
+                    String[] roomIDArray = {roomID};
+                    roomIDs.add(roomIDArray);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roomIDs;
+    }
 }

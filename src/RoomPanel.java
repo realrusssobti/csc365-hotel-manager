@@ -24,7 +24,7 @@ public class RoomPanel extends Panel {
             System.out.println("Room " + room.getRoomNumber() + " is a " + room.getRoomType() + " room.");
         }
         for (Reservation reservation : this.reservations) {
-            System.out.println("Reservation " + reservation.getReservationID() + " is for room " + reservation.getRoomNumber());
+            System.out.println("Reservation " + reservation.getReservationID() + " is for room " + reservation.getRoomNumber() + " on date " + reservation.getCheckInDate() + " to " + reservation.getCheckOutDate());
         }
         System.out.println("RoomPanel initialized!");
         setLayout(new FlowLayout());
@@ -45,7 +45,7 @@ public class RoomPanel extends Panel {
 
     private Color getButtonColor(int roomID) {
         for (Reservation reservation : reservations) {
-            if (reservation.getRoomNumber() == roomID) {
+            if (reservation.getRoomNumber() == roomID && (reservation.getCheckInDate().isBefore(LocalDate.now()) || reservation.getCheckInDate().isEqual(LocalDate.now())) && (reservation.getCheckOutDate().isAfter(LocalDate.now()) || reservation.getCheckOutDate().isEqual(LocalDate.now()))) {
                 return Color.RED; // Room is occupied
             }
         }
@@ -94,7 +94,7 @@ public class RoomPanel extends Panel {
             }
 
 
-            RoomStatusPopup popup = new RoomStatusPopup(String.valueOf(room.getRoomNumber()), isTaken, num_keys, guest_name, check_out_date_string);
+            RoomStatusPopup popup = new RoomStatusPopup(String.valueOf(room.getRoomNumber()), sqlConnection);
             popup.setSize(300, 500);
             popup.setVisible(true);
         }
