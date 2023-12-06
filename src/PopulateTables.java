@@ -39,6 +39,9 @@ public class PopulateTables {
         }
 
         ArrayList<Reservation> reservations = generateReservations();
+        for (Reservation reservation : reservations) {
+            addReservation(reservation, connection);
+        }
 
         // //can move this into a function but for now just here for creating 1
         // reservation
@@ -270,13 +273,14 @@ public class PopulateTables {
         }
     }
 
-    public static void addReservation(Room room, Connection connection) {
+    public static void addReservation(Reservation reservation, Connection connection) {
         try {
-            String query = "INSERT INTO Room (RoomNumber, RoomType, RoomPrice) VALUES (?, ?, ?)";
+            String query = "INSERT INTO Booking (GuestID, RoomNmber, CheckInDate, CheckOutDate) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, room.getRoomNumber());
-            statement.setString(2, room.getRoomType());
-            statement.setDouble(3, room.getRoomPrice());
+            statement.setInt(1, reservation.getCustomerID());
+            statement.setInt(2, reservation.getRoomNumber());
+            statement.setDate(3, Date.valueOf(reservation.getCheckInDate()));
+            statement.setDate(4, Date.valueOf(reservation.getCheckOutDate()));
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

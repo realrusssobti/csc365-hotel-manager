@@ -7,6 +7,7 @@ public class Reservation {
     private int roomNumber;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
+    private boolean checked_in;
 
     public Reservation(int reservationID, int customerID, int roomNumber, LocalDate checkInDate, LocalDate checkOutDate) {
         this.reservationID = reservationID;
@@ -14,6 +15,8 @@ public class Reservation {
         this.roomNumber = roomNumber;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
+        this.checked_in = false;
+
     }
 
     public Reservation() {
@@ -57,6 +60,10 @@ public class Reservation {
 
     public void setCheckOutDate(LocalDate checkOutDate) {
         this.checkOutDate = checkOutDate;
+    }
+
+    public boolean getCheckedIn(){
+        return this.checked_in;
     }
 
     // Constructor, getters, and setters here
