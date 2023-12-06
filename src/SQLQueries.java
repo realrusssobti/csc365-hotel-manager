@@ -21,16 +21,58 @@ public class SQLQueries {
     private static Connection connection;
 
     public SQLQueries() {
-        try{
-            connection = DriverManager.getConnection("jdbc:mysql://ambari-node5.csc.calpoly.edu:3306","rsobti","28103315");
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://ambari-node5.csc.calpoly.edu:3306", "rsobti", "28103315");
             // Use RSOBTI
             connection.createStatement().execute("USE rsobti");
             System.out.println("Database connection opened.");
-           }
-           catch (SQLException e) {
-               e.printStackTrace();
-           }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
+    public static ArrayList<String> getCustomerInfo(String customerId) {
+        ArrayList<String> tuple = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM Guest WHERE GuestID = ?;";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, customerId);
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    String first_name = rs.getString("FirstName");
+                    String last_name = rs.getString("LastName");
+                    String email = rs.getString("Email");
+                    String ph_num = rs.getString("Phone");
+                    String address = rs.getString("Addr");
+                    String city = rs.getString("City");
+                    String state = rs.getString("St");
+                    String zip = rs.getString("Zip");
+                    Collections.addAll(tuple, first_name, last_name, email, ph_num, address, city, state, zip);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tuple;
+    }
+
+    public static String getRoomType(String valueOf) {
+        String roomType = "";
+        try {
+            String query = "SELECT RoomType FROM Room WHERE RoomNumber = ?;";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, valueOf);
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    roomType = rs.getString("RoomType");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roomType;
+    }
+
     //ends connection to DB
     public void endConnection() {
         try {
@@ -187,6 +229,7 @@ public class SQLQueries {
     public ArrayList<ArrayList<String>> getReservationsBeyondDate(LocalDate earliest_date) {
         
         ArrayList<ArrayList<String>> table = new ArrayList<>();
+        System.out.println("Made it Here");
         try {
             String query =  "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType, B.BookingID, G.GuestID, R.RoomNumber " +
                                 "FROM Booking B, Guest G, Room R " +
@@ -195,10 +238,12 @@ public class SQLQueries {
 
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 Date earliest_date_sql = Date.valueOf(earliest_date);
+                System.out.println("Date: " + earliest_date_sql);
                 statement.setDate(1, earliest_date_sql);
                 ResultSet rs = statement.executeQuery();
 
                 while (rs.next()) {
+                    System.out.println("here");
                     ArrayList<String> tuple = new ArrayList<>();
 
                     String first_name       = rs.getString("FirstName");
@@ -492,7 +537,7 @@ public class SQLQueries {
 
     }
 
-    public void addReservation(String firstName, String lastName, Date checkInDate, Date checkOutDate, String roomType) {
+    public static void addReservation(String firstName, String lastName, Date checkInDate, Date checkOutDate, String roomType) {
         try {
             // Assuming you have tables Guest and Room in your database
             // Adjust the table and column names as per your database schema

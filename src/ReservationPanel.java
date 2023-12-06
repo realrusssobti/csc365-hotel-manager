@@ -9,8 +9,10 @@ import java.awt.event.ActionListener;
 public class ReservationPanel extends JPanel {
     private JTable reservationTable;
     private DefaultTableModel tableModel;
+    private SQLQueries sqlConnection;
 
-    public ReservationPanel() {
+    public ReservationPanel(SQLQueries sqlConnection) {
+        this.sqlConnection = sqlConnection;
         setLayout(new BorderLayout());
 
         // Title
@@ -107,7 +109,7 @@ public class ReservationPanel extends JPanel {
             JFrame frame = new JFrame("Reservation Panel Example");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-            ReservationPanel reservationPanel = new ReservationPanel();
+            ReservationPanel reservationPanel = new ReservationPanel(new SQLQueries());
             addDummyData(reservationPanel);
             frame.getContentPane().add(reservationPanel);
 
@@ -173,7 +175,7 @@ public class ReservationPanel extends JPanel {
                 Frame frame = new Frame();
                 frame.setSize(600, 400);
                 frame.setLocationRelativeTo(null);
-                CheckInOutPanel checkInOutPanel = new CheckInOutPanel();
+                CheckInOutPanel checkInOutPanel = new CheckInOutPanel(sqlConnection);
                 frame.add(checkInOutPanel);
                 frame.setVisible(true);
 

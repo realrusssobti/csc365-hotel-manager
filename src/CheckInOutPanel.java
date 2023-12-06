@@ -7,14 +7,11 @@ import java.util.Date;
 
 public class CheckInOutPanel extends Panel {
 
-    private final ArrayList<Reservation> reservations_to_checkin;
+    private ArrayList<Reservation> reservations_to_checkin;
     private SQLQueries sqlConnection;
 
     public CheckInOutPanel(SQLQueries sqlConnection) {
         this.sqlConnection = sqlConnection;
-        // this.reservations = new ArrayList<>();
-        // reservations.add(new Reservation(1, 101, 1, LocalDate.now(), null)); // Replace null with actual check-out date
-        // reservations.add(new Reservation(2, 102, 2, null, null)); // Replace null with actual check-in date
 
 
         LocalDate curr_date = LocalDate.now();
@@ -23,22 +20,18 @@ public class CheckInOutPanel extends Panel {
         ArrayList<ArrayList<String>> reservations_info = sqlConnection.getReservationsBeyondDate(curr_date);
         this.reservations_to_checkin = MainFrame.parseReservationObjects(reservations_info);
 
-        setLayout(new GridLayout(2, 1));
+//        setLayout(new GridLayout(2, 1));
 
         Panel checkedInPanel = createCheckedInPanel();
         add(checkedInPanel);
+        // add debug text
+        Label debugLabel = new Label("Debug: " + reservations_to_checkin.size() + " reservations to check in");
+        add(debugLabel);
 
         Panel checkInReservationPanel = createCheckInReservationPanel();
         add(checkInReservationPanel);
     }
 
-    //just to get past compile error for main method below that isnt used in actual run
-    public CheckInOutPanel() {
-        this.reservations_to_checkin = new ArrayList<>();
-        reservations_to_checkin.add(new Reservation(1, 101, 1, LocalDate.now(), null)); // Replace null with actual check-out date
-        reservations_to_checkin.add(new Reservation(2, 102, 2, null, null)); // Replace null with actual check-in date
-
-    }
 
     private Button createCheckOutButton(Reservation reservation) {
         Button checkOutButton = new Button("Check-Out");
@@ -122,12 +115,12 @@ public class CheckInOutPanel extends Panel {
     public static void main(String[] args) {
 
         Frame frame = new Frame("Check-In/Check-Out Panel");
-        CheckInOutPanel checkInOutPanel = new CheckInOutPanel();
+        CheckInOutPanel checkInOutPanel = new CheckInOutPanel(new SQLQueries());
 
         frame.setLayout(new BorderLayout());
         frame.add(checkInOutPanel, BorderLayout.CENTER);
 
-        frame.setSize(400, 300);
+        frame.setSize(1600, 900);
         frame.setVisible(true);
 
         frame.addWindowListener(new java.awt.event.WindowAdapter() {

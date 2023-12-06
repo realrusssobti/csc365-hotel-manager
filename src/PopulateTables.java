@@ -39,6 +39,9 @@ public class PopulateTables {
         }
 
         ArrayList<Reservation> reservations = generateReservations();
+        for (Reservation reservation : reservations) {
+            addReservation(reservation);
+        }
 
         // //can move this into a function but for now just here for creating 1
         // reservation
@@ -85,12 +88,16 @@ public class PopulateTables {
         return rooms;
     }
 
+    private static void resetRooms() {
+        return;
+    }
+
     public static ArrayList<Guest> generateGuests(int num_guests) {
         ArrayList<Guest> guests = new ArrayList<>();
-        String[] first_names = { "Alex", "Cameron", "Ethan", "Ben", "JP", "Kira", "Elijah", "Tray", "Jessica",
-                "Sahara" };
-        String[] addresses = { "1 grand", "151 madona", "1145 newport", "992 walnut", "403 canyon cir", "470 foothill",
-                "49 fortuna", "887 gilroy" };
+        String[] first_names = {"Alex", "Cameron", "Ethan", "Ben", "JP", "Kira", "Elijah", "Tray", "Jessica",
+                "Sahara"};
+        String[] addresses = {"1 grand", "151 madona", "1145 newport", "992 walnut", "403 canyon cir", "470 foothill",
+                "49 fortuna", "887 gilroy"};
         int guest_counter = 0;
 
         for (int i = 0; i < num_guests; i++) {
@@ -152,11 +159,11 @@ public class PopulateTables {
     // deletes tables
     private static void deleteTables() {
         try {
-            String resetGuestQuery = "DELETE * FROM Guest";
-            String resetRoomKeyQuery = "DELETE * FROM RoomKey";
-            String resetRoomQuery = "DELETE * FROM Room";
-            String resetBookingQuery = "DELETE * FROM Booking";
-            String resetReceiptQuery = "DELETE * FROM Receipt";
+            String resetGuestQuery = "DELETE FROM Guest"; // Updated for MySQL syntax.
+            String resetRoomKeyQuery = "DELETE FROM RoomKey";
+            String resetRoomQuery = "DELETE FROM Room";
+            String resetBookingQuery = "DELETE FROM Booking";
+            String resetReceiptQuery = "DELETE FROM Receipt";
             PreparedStatement deleteStatement = connection.prepareStatement(resetGuestQuery);
             deleteStatement.executeUpdate();
             deleteStatement = connection.prepareStatement(resetRoomKeyQuery);
@@ -270,17 +277,32 @@ public class PopulateTables {
         }
     }
 
-    public static void addReservation(Room room, Connection connection) {
-        try {
-            String query = "INSERT INTO Room (RoomNumber, RoomType, RoomPrice) VALUES (?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, room.getRoomNumber());
-            statement.setString(2, room.getRoomType());
-            statement.setDouble(3, room.getRoomPrice());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public static void addReservation(Reservation reservation) {
+        String firstName;
+        String lastName;
+        String roomType;
+
+        // get the info from the reservation
+        String customer_id = String.valueOf(reservation.getCustomerID());
+        // get the customer name from the customer id
+        ArrayList<String> customer_info = SQLQueries.getCustomerInfo(customer_id);
+        // check if the customer exists
+        if (customer_info.size() > 0) {
+            firstName = customer_info.get(0);
+            lastName = customer_info.get(1);
+            // convert CheckInDate from LocalDate to SQL date
+            Date checkInDateSQL = Date.valueOf(reservation.getCheckInDate());
+            // convert CheckOutDate from LocalDate to SQL date
+            Date checkOutDateSQL = Date.valueOf(reservation.getCheckOutDate());
+            roomType = SQLQueries.getRoomType(String.valueOf(reservation.getRoomNumber()));
+
+            SQLQueries.addReservation(firstName, lastName, checkInDateSQL, checkOutDateSQL, roomType);
+
+        } else {
+            System.out.println("Customer does not exist");
         }
+
+
     }
 
     public static int generate_random_num(int min, int max) {
