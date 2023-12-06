@@ -53,6 +53,7 @@ public class CheckInOutPanel extends Panel {
 
     private void performCheckIn(Reservation reservation) {
         reservation.setCheckInDate(LocalDate.now()); // Set the check-in date
+        reservation.setCheckedIn(true);
         System.out.println("Checked in Reservation " + reservation.getReservationID());
         // Update reservation status or perform necessary actions
     }

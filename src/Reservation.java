@@ -66,5 +66,9 @@ public class Reservation {
         return this.checked_in;
     }
 
+    public void setCheckedIn(boolean bool){
+        this.checked_in = bool;
+    }
+
     // Constructor, getters, and setters here
 }
