@@ -46,9 +46,9 @@ public class BillCustomerPanel extends Panel {
         generateBillButton.addActionListener(new GenerateBillButtonListener());
 
         // Customize the button appearance
-        generateBillButton.setForeground(Color.WHITE);
+        generateBillButton.setForeground(Color.BLACK);
         generateBillButton.setBackground(new Color(41, 128, 185)); // Adjust color as needed
-        generateBillButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        generateBillButton.setFont(new Font("Arial", Font.PLAIN, 20));
         generateBillButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15)); // Add padding
 
         // Create GridBagConstraints for the "Generate Bill" button
