@@ -41,7 +41,7 @@ public class CheckInOutPanel extends JPanel {
 
         LocalDate today = LocalDate.now();
         sqlConnection.setReservationCheckOut(today, reservation.getReservationID());
-        System.out.println("Checked out Room " + reservation.getRoomNumber());
+        System.out.println("Checked out Room " + reservation.getRoomNumber()+" on day "+today);
         // Update room status or perform necessary actions
 
         // Fetch updated data and recreate UI
@@ -52,13 +52,13 @@ public class CheckInOutPanel extends JPanel {
     private JButton createCheckInButton(Reservation reservation) {
         JButton checkInButton = new JButton("Check-In");
         checkInButton.addActionListener(e -> performCheckIn(reservation));
+        checkInButton.setPreferredSize(new Dimension(70, 10));
         return checkInButton;
     }
 
     private void performCheckIn(Reservation reservation) {
         reservation.setCheckInDate(LocalDate.now());
         reservation.setCheckedIn(true);
-
         sqlConnection.setReservationCheckIn(reservation.getCheckedIn(), reservation.getReservationID());
         System.out.println("Checked in Reservation " + reservation.getReservationID());
         // Update reservation status or perform necessary actions
@@ -81,26 +81,27 @@ public class CheckInOutPanel extends JPanel {
         }
 
         // Add border for visual appeal
-        checkedInPanel.setBorder(BorderFactory.createTitledBorder("Checked In Rooms"));
+        checkedInPanel.setBorder(BorderFactory.createTitledBorder("Currently checked-in rooms"));
 
         return checkedInPanel;
     }
 
     private JPanel createCheckInReservationPanel() {
-        JPanel checkInReservationPanel = new JPanel(new FlowLayout());
+        JPanel checkInReservationPanel = new JPanel(new GridLayout(0, 1, 0, 0));
 
         for (Reservation reservation : reservationsToCheckIn) {
             if (!reservation.getCheckedIn()) {
-                JLabel reservationLabel = new JLabel("Reservation " + reservation.getReservationID());
+                JPanel innerReservationPanel = new JPanel(new GridLayout(2, 0, 0, 0));
+                JLabel reservationLabel = new JLabel("Reservation " + reservation.getReservationID() + ": Room " + reservation.getRoomNumber());
                 JButton checkInButton = createCheckInButton(reservation);
-
-                checkInReservationPanel.add(reservationLabel);
-                checkInReservationPanel.add(checkInButton);
+                innerReservationPanel.add(reservationLabel);
+                innerReservationPanel.add(checkInButton);
+                checkInReservationPanel.add(innerReservationPanel);
             }
         }
 
         // Add border for visual appeal
-        checkInReservationPanel.setBorder(BorderFactory.createTitledBorder("Check In Reservations"));
+        checkInReservationPanel.setBorder(BorderFactory.createTitledBorder("Upcoming reservations"));
 
         return checkInReservationPanel;
     }

@@ -86,21 +86,22 @@ public class ReservationPanel extends JPanel {
         JScrollPane tableScrollPane = new JScrollPane(reservationTable);
         add(tableScrollPane, BorderLayout.SOUTH);
     }
-    static void addDummyData(ReservationPanel reservationPanel) {
-        DefaultTableModel tableModel = reservationPanel.tableModel;
+    
+    // static void addDummyData(ReservationPanel reservationPanel) {
+    //     DefaultTableModel tableModel = reservationPanel.tableModel;
 
-        // Dummy data
-        Object[][] data = {
-                {"John Doe", "101", "2023-12-01", "2023-12-10", "Single", "Check In/Out"},
-                {"Jane Smith", "102", "2023-12-05", "2023-12-15", "Double", "Check In/Out"},
-                {"Bob Johnson", "103", "2023-12-12", "2023-12-20", "Suite", "Check In/Out"}
-                // Add more rows as needed
-        };
+    //     // Dummy data
+    //     Object[][] data = {
+    //             {"John Doe", "101", "2023-12-01", "2023-12-10", "Single", "Check In/Out"},
+    //             {"Jane Smith", "102", "2023-12-05", "2023-12-15", "Double", "Check In/Out"},
+    //             {"Bob Johnson", "103", "2023-12-12", "2023-12-20", "Suite", "Check In/Out"}
+    //             // Add more rows as needed
+    //     };
 
-        for (Object[] row : data) {
-            tableModel.addRow(row);
-        }
-    }
+    //     for (Object[] row : data) {
+    //         tableModel.addRow(row);
+    //     }
+    // }
 
 
     public static void main(String[] args) {

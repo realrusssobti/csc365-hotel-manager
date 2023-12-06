@@ -98,7 +98,7 @@ public class SQLQueries {
                     ArrayList<String> tuple = new ArrayList<>();
 
                     int guest_id_obj = rs.getInt("GuestID");
-                    String guestID = Integer.toString(guest_id_obj); // convert to string
+                    String guestID = String.valueOf(guest_id_obj); // convert to string
                     String first_name = rs.getString("FirstName");
                     String last_name = rs.getString("LastName");
                     String email = rs.getString("Email");
@@ -107,17 +107,6 @@ public class SQLQueries {
                     String city = rs.getString("City");
                     String state = rs.getString("St");
                     String zip = rs.getString("Zip");
-
-                    // Date check_in_obj = rs.getDate("CheckInDate");
-                    // String check_in_date = check_in_obj.toString(); // convert to string
-                    // Date check_out_obj = rs.getDate("CheckOutDate");
-                    // String check_out_date = check_out_obj.toString(); // convert to string
-                    // String room_type = rs.getString("RoomType");
-                    // int booking_id_obj     = rs.getInt("BookingID"); 
-                    // String bookingID      = Integer.toString(booking_id_obj); // convert to string
-                    
-                    // int room_number_obj     = rs.getInt("RoomNumber"); 
-                    // String room_number      = Integer.toString(room_number_obj); // convert to string
                     
                     Collections.addAll(tuple, guestID, first_name, last_name, email, ph_num, address, city, state, zip);
                     table.add(tuple); // add new tuple to table list
@@ -127,7 +116,32 @@ public class SQLQueries {
             e.printStackTrace();
         }
         return table;
+    }
 
+    public static ArrayList<ArrayList<String>> getCustomersWithReservation() {
+        System.out.println("Getting all customers");
+
+        ArrayList<ArrayList<String>> table = new ArrayList<>();
+        try {
+            String query = "SELECT G.GuestID, G.FirstName FROM Guest G, Booking B WHERE B.GuestID = G.GuestID;";
+
+            try (Statement statement = connection.createStatement()) {
+                ResultSet rs = statement.executeQuery(query);
+                while (rs.next()) {
+                    ArrayList<String> tuple = new ArrayList<>();
+
+                    int guest_id_obj = rs.getInt("GuestID");
+                    String guestID = String.valueOf(guest_id_obj); // convert to string
+                    String first_name = rs.getString("FirstName");
+                    
+                    Collections.addAll(tuple, guestID, first_name);
+                    table.add(tuple); // add new tuple to table list
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return table;
     }
 
     // returns a list of tuples: first name, last name, check in date, check out date, room type
@@ -295,7 +309,7 @@ public class SQLQueries {
             String query = "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType, B.BookingID, G.GuestID, R.RoomNumber , B.CheckedIn " +
                     "FROM Booking B, Guest G, Room R " +
                     "WHERE B.GuestID = G.GuestID AND B.RoomNumber = R.RoomNumber " +
-                    "AND B.CheckInDate > ?";
+                    "AND B.CheckOutDate > ?";
 
             PreparedStatement statement = connection.prepareStatement(query);
             Date earliest_date_sql = Date.valueOf(earliest_date);
@@ -342,7 +356,6 @@ public class SQLQueries {
                     checkedInString = "0";
                 }
 
-
                 Collections.addAll(tuple, first_name, last_name, check_in_date, check_out_date, room_type, bookingID, guestID, room_number, checkedInString);
                 table.add(tuple); // add new tuple to table list
             }
@@ -352,6 +365,7 @@ public class SQLQueries {
         }
         return table;
     }
+
 
     public ArrayList<ArrayList<String>> getActiveReservations(LocalDate today) {
 
@@ -411,6 +425,7 @@ public class SQLQueries {
 
 
                 Collections.addAll(tuple, first_name, last_name, check_in_date, check_out_date, room_type, bookingID, guestID, room_number, checkedInString);
+                System.out.println(tuple.toString());
                 table.add(tuple); // add new tuple to table list
             }
 
@@ -420,12 +435,12 @@ public class SQLQueries {
         return table;
     }
 
-    public void setReservationCheckIn(boolean check_in_date, int bookingID) {
+    public void setReservationCheckIn(boolean checked_in, int bookingID) {
         try {
             String query = "UPDATE Booking SET CheckedIn = ? WHERE BookingID=?;";
             try (PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setBoolean(1, check_in_date);
-                ;
+                statement.setBoolean(1, checked_in);
+                
                 statement.setInt(2, bookingID);
                 statement.executeUpdate();
             }
@@ -868,7 +883,7 @@ public class SQLQueries {
         String statement;
         ArrayList<String> reservations = new ArrayList<>();
         // Get all reservations between the given dates
-        statement = "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType " +
+        statement = "SELECT G.FirstName, R.RoomNumber, B.CheckInDate, B.CheckOutDate, R.RoomType " +
                 "FROM Booking B, Guest G, Room R " +
                 "WHERE B.GuestID = G.GuestID AND B.RoomNumber = R.RoomNumber " +
                 "AND B.CheckInDate >= ? AND B.CheckOutDate <= ?;";

@@ -102,7 +102,7 @@ public class PopulateTables {
 
         for (int i = 0; i < num_guests; i++) {
             String first_name = first_names[generate_random_num(0, first_names.length)];
-            String last_name = String.valueOf(generate_random_char());
+            String last_name = String.valueOf(Character.toUpperCase(generate_random_char()));
             String email = first_name + "." + last_name + "@gmail.com";
             String ph_num = String.valueOf(generate_random_num(1111111111, Integer.MAX_VALUE));
             String address = addresses[generate_random_num(0, addresses.length)];

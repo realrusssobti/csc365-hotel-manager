@@ -6,6 +6,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class BillCustomerPanel extends Panel {
     private final Choice customerChoice;
@@ -76,26 +77,29 @@ public class BillCustomerPanel extends Panel {
         Choice choice = new Choice();
         // Add dummy customer names for demonstration
 
-        ArrayList<ArrayList<String>> customers_info = sqlConnection.getCustomersAll();
+        ArrayList<ArrayList<String>> customers_info = SQLQueries.getCustomersWithReservation();
 
         for (int i=0; i<customers_info.size(); i++){
             ArrayList<String> customer = customers_info.get(i);
-            choice.add(customer.get(6));
+            String cust = String.valueOf(customer.get(0)) + " " + customer.get(1);
+            choice.add(cust);
         }
-        // choice.add("John Doe");
-        // choice.add("Jane Smith");
-        // choice.add("Bob Johnson");
-        // Add more customers as needed
         return choice;
     }
 
     private Choice createReservationChoice() {
         Choice choice = new Choice();
-        // Add dummy reservation numbers for demonstration
-        choice.add("12345");
-        choice.add("67890");
-        choice.add("54321");
-        // Add more reservation numbers as needed
+        
+        ArrayList<ArrayList<String>> reservation_info = sqlConnection.getReservationAll();
+        System.out.println("------------------------");
+        System.out.println(reservation_info.size());
+        for (int i=0; i<reservation_info.size(); i++){
+            ArrayList<String> reservation = reservation_info.get(i);
+            System.out.println(reservation);
+            String res_num = String.valueOf(reservation.get(0)) + " " + reservation.get(1);
+            choice.add(res_num);
+        }
+
         return choice;
     }
 
@@ -103,15 +107,18 @@ public class BillCustomerPanel extends Panel {
         @Override
         public void actionPerformed(ActionEvent e) {
             int total_bill = 0;
-            String selectedCustomer = customerChoice.getSelectedItem();
+            // extract cust id from input cust
+            StringTokenizer tokenizer = new StringTokenizer(customerChoice.getSelectedItem());
+            int selectedCustomer = Integer.parseInt(tokenizer.nextToken());
             String selectedReservation = reservationChoice.getSelectedItem();
 
             LocalDate today = LocalDate.now();
-            ArrayList<ArrayList<String>> reservationsForBilling = sqlConnection.getReservationByCustomer_Billing(Integer.parseInt(selectedCustomer), Date.valueOf(today));
+            // extract id from cust input
+            ArrayList<ArrayList<String>> reservationsForBilling = sqlConnection.getReservationByCustomer_Billing(selectedCustomer, Date.valueOf(today));
 
             for (int i=0; i<reservationsForBilling.size(); i++){
                 ArrayList<String> curr_reservation = reservationsForBilling.get(i);
-
+        
                 LocalDate checkinDate = LocalDate.parse(curr_reservation.get(2));
                 LocalDate checkOutDate = LocalDate.parse(curr_reservation.get(3));
 
@@ -120,28 +127,29 @@ public class BillCustomerPanel extends Panel {
 
                 //get room price
                 total_bill += amount_to_pay;
-
             }
-
-            String fullName = reservationsForBilling.get(0).get(0) + " " + reservationsForBilling.get(0).get(1);
-
-
-            // Here, you can perform any additional logic to generate the bill
-            // For simplicity, let's just display the information for now
-            showMessageDialog("Generating bill for Customer: " + fullName 
+            System.out.println("making the bill");
+            if (reservationsForBilling.size() > 0) {
+                String fullName = reservationsForBilling.get(0).get(0) + " " + reservationsForBilling.get(0).get(1);
+                showMessage("Generating bill for Customer: " + fullName 
                     + "\nReservation Number: " + selectedReservation
-                    + "\nTotal Bill: " + total_bill);
+                    + "\nTotal Bill: " + String.valueOf(total_bill));
+            } else {            
+                showMessage("No reservations to pay for . . .");
+            }
+    
         }
     }
 
-    private void showMessageDialog(String message) {
+    private void showMessage(String message) {
         JOptionPane.showMessageDialog(this, message, "Message", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    // public static void main(String[] args) {
-    //     Frame frame = new Frame("Bill Customer Panel");
-    //     frame.add(new BillCustomerPanel());
-    //     frame.setSize(300, 250);
-    //     frame.setVisible(true);
-    // }
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Bill Customer Panel");
+        frame.add(new BillCustomerPanel(new SQLQueries()));
+        frame.setSize(300, 250);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
 }
