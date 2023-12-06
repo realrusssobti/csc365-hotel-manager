@@ -102,10 +102,23 @@ public class SQLQueries {
                     ArrayList<String> tuple = new ArrayList<>();
                     String first_name = rs.getString("FirstName");
                     String last_name = rs.getString("LastName");
-                    Date check_in_obj = rs.getDate("CheckInDate");
-                    String check_in_date = check_in_obj.toString(); // convert to string
-                    Date check_out_obj = rs.getDate("CheckOutDate");
-                    String check_out_date = check_out_obj.toString(); // convert to string
+                    
+                    Date check_out_obj      = rs.getDate("CheckOutDate");
+                    String check_out_date   ; // declare string
+                    if (check_out_obj == null) {
+                         check_out_date = new Date(0).toString();
+                    }
+                    else { check_out_date   = check_out_obj.toString(); // convert to string
+                         }
+
+                    Date check_in_obj      = rs.getDate("CheckInDate");
+                    String check_in_date   ; // declare string
+                    if (check_in_obj == null) {
+                         check_in_date = new Date(0).toString();
+                    }
+                    else { check_in_date   = check_in_obj.toString(); // convert to string
+                    }
+
                     String room_type = rs.getString("RoomType");
                     int booking_id_obj     = rs.getInt("BookingID"); 
                     String bookingID      = Integer.toString(booking_id_obj); // convert to string
@@ -138,10 +151,23 @@ public class SQLQueries {
                 while (rs.next()) {
                     String first_name       = rs.getString("FirstName");
                     String last_name        = rs.getString("LastName");
-                    Date check_in_obj       = rs.getDate("CheckInDate");
-                    String check_in_date    = check_in_obj.toString(); // convert to string
+                    
                     Date check_out_obj      = rs.getDate("CheckOutDate");
-                    String check_out_date   = check_out_obj.toString(); // convert to string
+                    String check_out_date   ; // declare string
+                    if (check_out_obj == null) {
+                         check_out_date = new Date(0).toString();
+                    }
+                    else { check_out_date   = check_out_obj.toString(); // convert to string
+                         }
+
+                    Date check_in_obj      = rs.getDate("CheckInDate");
+                    String check_in_date   ; // declare string
+                    if (check_in_obj == null) {
+                         check_in_date = new Date(0).toString();
+                    }
+                    else { check_in_date   = check_in_obj.toString(); // convert to string
+                    }
+
                     String room_type        = rs.getString("RoomType");
                     int booking_id_obj      = rs.getInt("BookingID"); 
                     String bookingID        = Integer.toString(booking_id_obj); // convert to string
@@ -171,16 +197,29 @@ public class SQLQueries {
                 Date earliest_date_sql = Date.valueOf(earliest_date);
                 statement.setDate(1, earliest_date_sql);
                 ResultSet rs = statement.executeQuery();
-                
+
                 while (rs.next()) {
                     ArrayList<String> tuple = new ArrayList<>();
 
                     String first_name       = rs.getString("FirstName");
                     String last_name        = rs.getString("LastName");
-                    Date check_in_obj       = rs.getDate("CheckInDate");
-                    String check_in_date    = check_in_obj.toString(); // convert to string
+
                     Date check_out_obj      = rs.getDate("CheckOutDate");
-                    String check_out_date   = check_out_obj.toString(); // convert to string
+                    String check_out_date   ; // declare string
+                    if (check_out_obj == null) {
+                         check_out_date = new Date(0).toString();
+                    }
+                    else { check_out_date   = check_out_obj.toString(); // convert to string
+                         }
+
+                    Date check_in_obj      = rs.getDate("CheckInDate");
+                    String check_in_date   ; // declare string
+                    if (check_in_obj == null) {
+                         check_in_date = new Date(0).toString();
+                    }
+                    else { check_in_date   = check_in_obj.toString(); // convert to string
+                    }
+
                     String room_type        = rs.getString("RoomType");
                     int booking_id_obj      = rs.getInt("BookingID"); 
                     String bookingID        = Integer.toString(booking_id_obj); // convert to string
@@ -232,7 +271,7 @@ public class SQLQueries {
                     else { check_out_date   = check_out_obj.toString(); // convert to string
                          }
 
-                    Date check_in_obj      = rs.getDate("CheckOutDate");
+                    Date check_in_obj      = rs.getDate("CheckInDate");
                     String check_in_date   ; // convert to string
                     if (check_in_obj == null) {
                          check_in_date = new Date(0).toString();
@@ -280,7 +319,7 @@ public class SQLQueries {
                     else { check_out_date   = check_out_obj.toString(); // convert to string
                          }
 
-                    Date check_in_obj      = rs.getDate("CheckOutDate");
+                    Date check_in_obj      = rs.getDate("CheckInDate");
                     String check_in_date   ; // convert to string
                     if (check_in_obj == null) {
                          check_in_date = new Date(0).toString();
