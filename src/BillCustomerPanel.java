@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 public class BillCustomerPanel extends Panel {
@@ -111,8 +112,14 @@ public class BillCustomerPanel extends Panel {
             for (int i=0; i<reservationsForBilling.size(); i++){
                 ArrayList<String> curr_reservation = reservationsForBilling.get(i);
 
+                LocalDate checkinDate = LocalDate.parse(curr_reservation.get(2));
+                LocalDate checkOutDate = LocalDate.parse(curr_reservation.get(3));
+
+                int days_stayed = (int) ChronoUnit.DAYS.between(checkinDate, checkOutDate);
+                int amount_to_pay = Integer.parseInt(curr_reservation.get(8)) * days_stayed;
+
                 //get room price
-                total_bill += Integer.parseInt(curr_reservation.get(8));
+                total_bill += amount_to_pay;
 
             }
 
