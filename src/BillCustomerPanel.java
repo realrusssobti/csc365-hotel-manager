@@ -68,15 +68,13 @@ public class BillCustomerPanel extends Panel {
 
         for (int i=0; i<customers_info.size(); i++){
             ArrayList<String> customer = customers_info.get(i);
-<<<<<<< HEAD
             String cust = String.valueOf(customer.get(0)) + " " + customer.get(1);
             choice.add(cust);
-=======
 //            choice.add(customer.get(6));
             // Get the customer name
-            String customerName = customer.get(1) + " " + customer.get(2);
-            choice.add(customerName);
->>>>>>> 30f9adaf8915dc1616312346cb788c6f01c963a6
+
+//            String customerName = customer.get(1) + " " + customer.get(2);
+//            choice.add(customerName);
         }
         return choice;
     }
@@ -104,11 +102,10 @@ public class BillCustomerPanel extends Panel {
             // extract cust id from input cust
             StringTokenizer tokenizer = new StringTokenizer(customerChoice.getSelectedItem());
             int selectedCustomer = Integer.parseInt(tokenizer.nextToken());
-            String selectedReservation = reservationChoice.getSelectedItem();
 
             LocalDate today = LocalDate.now();
             // extract id from cust input
-            ArrayList<ArrayList<String>> reservationsForBilling = sqlConnection.getReservationByCustomer_Billing(selectedCustomer, Date.valueOf(today));
+            ArrayList<ArrayList<String>> reservationsForBilling = sqlConnection.getReservationByCustomer_Billing(selectedCustomer);
 
             for (int i = 0; i < reservationsForBilling.size(); i++) {
                 ArrayList<String> curr_reservation = reservationsForBilling.get(i);
@@ -126,7 +123,6 @@ public class BillCustomerPanel extends Panel {
             if (reservationsForBilling.size() > 0) {
                 String fullName = reservationsForBilling.get(0).get(0) + " " + reservationsForBilling.get(0).get(1);
                 showMessage("Generating bill for Customer: " + fullName 
-                    + "\nReservation Number: " + selectedReservation
                     + "\nTotal Bill: " + String.valueOf(total_bill));
             } else {            
                 showMessage("No reservations to pay for . . .");

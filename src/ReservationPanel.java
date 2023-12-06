@@ -66,7 +66,7 @@ public class ReservationPanel extends JPanel {
         add(buttonsPanel, BorderLayout.CENTER);
 
         // Table
-        String[] columnNames = {"Customer", "Room Number", "Start", "End", "Room Type", "Check In/Out"};
+        String[] columnNames = {"First Name", "Last Name", "Start", "End", "Room Type", "Check In/Out"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {

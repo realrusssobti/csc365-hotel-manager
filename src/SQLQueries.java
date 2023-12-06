@@ -298,6 +298,57 @@ public class SQLQueries {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+         return table;
+     }
+
+    //returns list of reservations and roomprice and customer info w the condition that today's date is on or past the checkout date
+    public ArrayList<ArrayList<String>> getReservationByCustomer_Billing(int CustomerID) {
+
+        ArrayList<ArrayList<String>> table = new ArrayList<>();
+        try {
+            String query = "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType, B.BookingID, G.GuestID, R.RoomPrice " +
+                    "FROM Booking B, Guest G, Room R " +
+                    "WHERE B.GuestID = ? AND B.GuestID = G.GuestID AND B.RoomNumber = R.RoomNumber ";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, CustomerID);
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    ArrayList<String> tuple = new ArrayList<>();
+                    String first_name = rs.getString("FirstName");
+                    String last_name = rs.getString("LastName");
+
+                    Date check_out_obj = rs.getDate("CheckOutDate");
+                    String check_out_date; // declare string
+                    if (check_out_obj == null) {
+                        check_out_date = new Date(0).toString();
+                    } else {
+                        check_out_date = check_out_obj.toString(); // convert to string
+                    }
+
+                    Date check_in_obj = rs.getDate("CheckInDate");
+                    String check_in_date; // declare string
+                    if (check_in_obj == null) {
+                        check_in_date = new Date(0).toString();
+                    } else {
+                        check_in_date = check_in_obj.toString(); // convert to string
+                    }
+
+                    String room_type = rs.getString("RoomType");
+                    int booking_id_obj = rs.getInt("BookingID");
+                    String bookingID = Integer.toString(booking_id_obj); // convert to string
+                    int guest_id_obj = rs.getInt("GuestID");
+                    String guestID = Integer.toString(guest_id_obj); // convert to string
+                    int room_price_obj = rs.getInt("RoomPrice");
+                    String room_price = Integer.toString(room_price_obj); // convert to string
+                    Collections.addAll(tuple, first_name, last_name, check_in_date, check_out_date, room_type, bookingID, guestID, room_type, room_price);
+                    // print tuple
+                    System.out.println(tuple);
+                    table.add(tuple);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return table;
     }
 
@@ -883,7 +934,7 @@ public class SQLQueries {
         String statement;
         ArrayList<String> reservations = new ArrayList<>();
         // Get all reservations between the given dates
-        statement = "SELECT G.FirstName, R.RoomNumber, B.CheckInDate, B.CheckOutDate, R.RoomType " +
+        statement = "SELECT G.FirstName,G.LastName , R.RoomNumber, B.CheckInDate, B.CheckOutDate, R.RoomType " +
                 "FROM Booking B, Guest G, Room R " +
                 "WHERE B.GuestID = G.GuestID AND B.RoomNumber = R.RoomNumber " +
                 "AND B.CheckInDate >= ? AND B.CheckOutDate <= ?;";

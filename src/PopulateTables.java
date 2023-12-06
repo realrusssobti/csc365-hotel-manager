@@ -145,7 +145,7 @@ public class PopulateTables {
 
         // customer 4 reserves room 192 from dec-1 to dec-26 in 2023 to spy on her
         // cheating husband after seeing his recent checkings history
-        Reservation r5 = new Reservation(5, guest_ids.get((int) (Math.random() * guest_ids.size())), 191, LocalDate.of(2023, 12, 1), LocalDate.of(2023, 12, 26), true);
+        Reservation r5 = new Reservation(5, guest_ids.get((int) (Math.random() * guest_ids.size())), 191, LocalDate.of(2023, 12, 1), LocalDate.of(2023, 12, 26), false);
 
         // customer 10 reserves room 120 from jun-5 to jul-30 in 2024 for summer break
         Reservation r6 = new Reservation(6, guest_ids.get((int) (Math.random() * guest_ids.size())), 120, LocalDate.of(2024, 6, 5), LocalDate.of(2024, 7, 30), false);
