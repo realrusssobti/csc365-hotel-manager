@@ -78,13 +78,13 @@ public class CheckInOutPanel extends Panel {
         Panel checkInReservationPanel = new Panel(new GridLayout(0, 2));
 
         for (Reservation reservation : reservations_to_checkin) {
-            // if (reservation.getCheckInDate() == null) {
+            if (reservation.getCheckedIn() == false) {
                 Label reservationLabel = new Label("Reservation " + reservation.getReservationID());
                 Button checkInButton = createCheckInButton(reservation);
 
                 checkInReservationPanel.add(reservationLabel);
                 checkInReservationPanel.add(checkInButton);
-            // }
+            }
         }
 
         return checkInReservationPanel;
