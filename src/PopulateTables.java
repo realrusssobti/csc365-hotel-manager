@@ -118,28 +118,37 @@ public class PopulateTables {
     }
 
     public static ArrayList<Reservation> generateReservations() {
+        // get users from database
+        ArrayList<ArrayList<String>> customers_info = SQLQueries.getCustomersAll();
+        // get the list of Guest IDs
+        ArrayList<Integer> guest_ids = new ArrayList<Integer>();
+        for (int i = 0; i < customers_info.size(); i++) {
+            guest_ids.add(Integer.valueOf(customers_info.get(i).get(0)));
+        }
+
+
         ArrayList<Reservation> reservations = new ArrayList<>();
 
         // customer 1 reserves room 101 from jan-1 to jan-30 in 2014
-        Reservation r1 = new Reservation(1, 2, 101, LocalDate.of(2014, 1, 1), LocalDate.of(2014, 1, 30));
+        Reservation r1 = new Reservation(1, guest_ids.get((int) (Math.random() * guest_ids.size())), 101, LocalDate.of(2014, 1, 1), LocalDate.of(2014, 1, 30));
 
         // customer 2 reserves room 150 from jan-4 to feb-5 in 2014
-        Reservation r2 = new Reservation(2, 2, 150, LocalDate.of(2014, 1, 4), LocalDate.of(2014, 2, 5));
+        Reservation r2 = new Reservation(2, guest_ids.get((int) (Math.random() * guest_ids.size())), 150, LocalDate.of(2014, 1, 4), LocalDate.of(2014, 2, 5));
 
         // customer 3 reserves room 190 from dec-1 to dec-26 in 2023 to cheat on his
         // wife during christmas
-        Reservation r3 = new Reservation(3, 3, 190, LocalDate.of(2023, 12, 1), LocalDate.of(2023, 12, 26));
+        Reservation r3 = new Reservation(3, guest_ids.get((int) (Math.random() * guest_ids.size())), 190, LocalDate.of(2023, 12, 1), LocalDate.of(2023, 12, 26));
 
         // customer 3 also reserves room 191 from dec-2 to dec-27 in 2023 for the person
         // he is cheating with
-        Reservation r4 = new Reservation(4, 3, 191, LocalDate.of(2023, 12, 2), LocalDate.of(2023, 12, 27));
+        Reservation r4 = new Reservation(4, guest_ids.get((int) (Math.random() * guest_ids.size())), 191, LocalDate.of(2023, 12, 2), LocalDate.of(2023, 12, 27));
 
         // customer 4 reserves room 192 from dec-1 to dec-26 in 2023 to spy on her
         // cheating husband after seeing his recent checkings history
-        Reservation r5 = new Reservation(5, 3, 191, LocalDate.of(2023, 12, 1), LocalDate.of(2023, 12, 26));
+        Reservation r5 = new Reservation(5, guest_ids.get((int) (Math.random() * guest_ids.size())), 191, LocalDate.of(2023, 12, 1), LocalDate.of(2023, 12, 26));
 
         // customer 10 reserves room 120 from jun-5 to jul-30 in 2024 for summer break
-        Reservation r6 = new Reservation(6, 10, 120, LocalDate.of(2024, 6, 5), LocalDate.of(2024, 7, 30));
+        Reservation r6 = new Reservation(6, guest_ids.get((int) (Math.random() * guest_ids.size())), 120, LocalDate.of(2024, 6, 5), LocalDate.of(2024, 7, 30));
 
         reservations.add(r1);
         reservations.add(r2);
@@ -164,16 +173,17 @@ public class PopulateTables {
             String resetRoomQuery = "DELETE FROM Room";
             String resetBookingQuery = "DELETE FROM Booking";
             String resetReceiptQuery = "DELETE FROM Receipt";
-            PreparedStatement deleteStatement = connection.prepareStatement(resetGuestQuery);
+            PreparedStatement deleteStatement = connection.prepareStatement(resetReceiptQuery);
             deleteStatement.executeUpdate();
             deleteStatement = connection.prepareStatement(resetRoomKeyQuery);
             deleteStatement.executeUpdate();
-            deleteStatement = connection.prepareStatement(resetRoomQuery);
-            deleteStatement.executeUpdate();
             deleteStatement = connection.prepareStatement(resetBookingQuery);
             deleteStatement.executeUpdate();
-            deleteStatement = connection.prepareStatement(resetReceiptQuery);
+            deleteStatement = connection.prepareStatement(resetRoomQuery);
             deleteStatement.executeUpdate();
+            deleteStatement = connection.prepareStatement(resetGuestQuery);
+            deleteStatement.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -295,8 +305,10 @@ public class PopulateTables {
             // convert CheckOutDate from LocalDate to SQL date
             Date checkOutDateSQL = Date.valueOf(reservation.getCheckOutDate());
             roomType = SQLQueries.getRoomType(String.valueOf(reservation.getRoomNumber()));
+            // find an eligible room
+            int roomNumber = SQLQueries.findEligibleRoom(roomType, checkInDateSQL, checkOutDateSQL);
 
-            SQLQueries.addReservation(firstName, lastName, checkInDateSQL, checkOutDateSQL, roomType);
+            SQLQueries.addReservation(customer_id, checkInDateSQL, checkOutDateSQL, String.valueOf(roomNumber));
 
         } else {
             System.out.println("Customer does not exist");

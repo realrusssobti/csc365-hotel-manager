@@ -115,12 +115,16 @@ public class BookingRoomPopup extends JFrame {
                 // Make into LocalDates
                 LocalDate checkInDateLocal = LocalDate.parse(checkInDate);
                 LocalDate checkOutDateLocal = LocalDate.parse(checkOutDate);
+                // convert to sql date
+                Date sqlCheckInDate = Date.valueOf(checkInDateLocal);
+                Date sqlCheckOutDate = Date.valueOf(checkOutDateLocal);
+
 
                 // Create a new Reservation object with the input data
                 Reservation newReservation = new Reservation(reservationID, selectedCustomerID, roomID, checkInDateLocal, checkOutDateLocal);
 
                 ArrayList<String> customer_info = sqlConnection.getCustomerInfo(String.valueOf(selectedCustomerID));
-                sqlConnection.addReservation(customer_info.get(0), customer_info.get(1), Date.valueOf(checkInDateLocal), Date.valueOf(checkOutDateLocal), String.valueOf(roomID));
+                sqlConnection.addReservation(Integer.toString(selectedCustomerID), sqlCheckInDate, sqlCheckOutDate, String.valueOf(roomID));
 
                 // Perform operations with the new reservation (e.g., save to database)
                 // For demonstration purposes, you can print the new reservation details

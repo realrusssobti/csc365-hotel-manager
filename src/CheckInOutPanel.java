@@ -19,13 +19,13 @@ public class CheckInOutPanel extends Panel {
         //getting upcoming reservations from db (reservations with check-in date later than current date)
         ArrayList<ArrayList<String>> reservations_info = sqlConnection.getReservationsBeyondDate(curr_date);
         this.reservations_to_checkin = MainFrame.parseReservationObjects(reservations_info);
+        Label debugLabel = new Label("Debug: " + reservations_to_checkin.size() + " reservations to check in");
 
-//        setLayout(new GridLayout(2, 1));
+        setLayout(new GridLayout(2, 1));
 
         Panel checkedInPanel = createCheckedInPanel();
         add(checkedInPanel);
         // add debug text
-        Label debugLabel = new Label("Debug: " + reservations_to_checkin.size() + " reservations to check in");
         add(debugLabel);
 
         Panel checkInReservationPanel = createCheckInReservationPanel();
@@ -67,7 +67,7 @@ public class CheckInOutPanel extends Panel {
 
     //This might need modification to display rooms that have been checked in
     private Panel createCheckedInPanel() {
-        Panel checkedInPanel = new Panel(new GridLayout(0, 2));
+        Panel checkedInPanel = new Panel(new GridLayout(1, 2));
 
         for (Reservation reservation : reservations_to_checkin) {
             if (reservation.getCheckedIn() == true) {

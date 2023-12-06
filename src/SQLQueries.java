@@ -85,20 +85,20 @@ public class SQLQueries {
         }
     }
 
-    public ArrayList<ArrayList<String>> getCustomersAll(){
+    public static ArrayList<ArrayList<String>> getCustomersAll() {
         System.out.println("Getting all customers");
 
         ArrayList<ArrayList<String>> table = new ArrayList<>();
         try {
-            String query =  "SELECT * FROM Guest;";
-                                
+            String query = "SELECT * FROM Guest;";
+
             try (Statement statement = connection.createStatement()) {
                 ResultSet rs = statement.executeQuery(query);
                 while (rs.next()) {
                     ArrayList<String> tuple = new ArrayList<>();
 
-                    int guest_id_obj     = rs.getInt("GuestID"); 
-                    String guestID      = Integer.toString(guest_id_obj); // convert to string
+                    int guest_id_obj = rs.getInt("GuestID");
+                    String guestID = Integer.toString(guest_id_obj); // convert to string
                     String first_name = rs.getString("FirstName");
                     String last_name = rs.getString("LastName");
                     String email = rs.getString("Email");
@@ -563,27 +563,65 @@ public class SQLQueries {
 
     }
 
-    public static void addReservation(String firstName, String lastName, Date checkInDate, Date checkOutDate, String roomType) {
+    /* Find a room where there does not exist a reservation for the room between the given dates
+     * @param checkInDate: the check in date
+     * @param checkOutDate: the check out date
+     * @return: the room number of the available room
+     */
+    public static void findAvailableRoom(Date checkInDate, Date checkOutDate) {
+        try {
+            String query = "SELECT RoomNumber FROM Room WHERE RoomNumber NOT IN (SELECT RoomNumber FROM Booking WHERE CheckInDate <= ? AND CheckOutDate >= ?);";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setDate(1, checkInDate);
+                statement.setDate(2, checkOutDate);
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    int roomNumber = rs.getInt("RoomNumber");
+                    System.out.println("Available room: " + roomNumber);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /* Find a room where there does not exist a reservation for the room between the given dates and is of a certain type
+     * @param checkInDate: the check in date
+     * @param checkOutDate: the check out date
+     * @return: the room number of the available room
+     */
+    public static int findEligibleRoom(String roomType, Date checkInDate, Date checkOutDate) {
+        int roomNumber = 0;
+        try {
+            String query = "SELECT RoomNumber FROM Room WHERE RoomNumber NOT IN (SELECT RoomNumber FROM Booking WHERE CheckInDate <= ? AND CheckOutDate >= ?) AND RoomType = ?;";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setDate(1, checkInDate);
+                statement.setDate(2, checkOutDate);
+                statement.setString(3, roomType);
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    roomNumber = rs.getInt("RoomNumber");
+                    System.out.println("Available room: " + roomNumber);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roomNumber;
+    }
+
+    public static void addReservation(String GuestID, Date checkInDate, Date checkOutDate, String RoomNumber) {
         try {
             // Assuming you have tables Guest and Room in your database
             // Adjust the table and column names as per your database schema
-            String guestQuery = "INSERT INTO Guest (FirstName, LastName) VALUES (?, ?)";
-            String bookingQuery = "INSERT INTO Booking (GuestID, CheckInDate, CheckOutDate, RoomNumber) VALUES ((SELECT GuestID FROM Guest WHERE FirstName = ? AND LastName = ?), ?, ?, (SELECT RoomNumber FROM Room WHERE RoomType = ? LIMIT 1))";
-
-            // Insert guest details first
-            try (PreparedStatement guestStatement = connection.prepareStatement(guestQuery)) {
-                guestStatement.setString(1, firstName);
-                guestStatement.setString(2, lastName);
-                guestStatement.executeUpdate();
-            }
-
+//            String bookingQuery = "INSERT INTO Booking (GuestID, CheckInDate, CheckOutDate, RoomNumber) VALUES (?, ?, ?, (SELECT RoomNumber FROM Room WHERE RoomType = ? LIMIT 1))";
+            String bookingQuery = "INSERT INTO Booking (GuestID, CheckInDate, CheckOutDate, RoomNumber) VALUES (?, ?, ?, ?)";
             // Insert reservation details
             try (PreparedStatement bookingStatement = connection.prepareStatement(bookingQuery)) {
-                bookingStatement.setString(1, firstName);
-                bookingStatement.setString(2, lastName);
-                bookingStatement.setDate(3, checkInDate);
-                bookingStatement.setDate(4, checkOutDate);
-                bookingStatement.setString(5, roomType);
+                bookingStatement.setString(1, GuestID);
+                bookingStatement.setDate(2, checkInDate);
+                bookingStatement.setDate(3, checkOutDate);
+                bookingStatement.setString(4, RoomNumber);
                 bookingStatement.executeUpdate();
             }
             System.out.println("Reservation added successfully.");
