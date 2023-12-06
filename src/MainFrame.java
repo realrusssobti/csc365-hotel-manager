@@ -93,7 +93,7 @@ public class MainFrame extends Frame {
         // //TODO: Uncomment these and delete prev paragraph to get room info from database when sqlQueries can make the connection
          SQLQueries query = new SQLQueries();
          ArrayList<ArrayList<String>> rooms_info = query.getRoomStatus();
-         rooms = parseRoomObjects(rooms_info);
+        rooms = parseRoomObjects(rooms_info);
 
 //        Reservation[] reservationsList = {new Reservation(1, 1, 101, LocalDate.now(), LocalDate.now().plusDays(1)),
 //                new Reservation(2, 2, 102, LocalDate.now(), LocalDate.now().plusDays(1))};
@@ -103,13 +103,13 @@ public class MainFrame extends Frame {
 //        }
 
         // //TODO: Uncomment these and delete prev paragraph to get room info from database when sqlQueries can make the connection
-         ArrayList<ArrayList<String>> reservations_info = query.getReservationAll();
-         reservations = parseReservationObjects(reservations_info);
+        ArrayList<ArrayList<String>> reservations_info = query.getReservationAll();
+        reservations = parseReservationObjects(reservations_info);
 
         AnalyticsScreen analyticsPanel = new AnalyticsScreen();
         RoomPanel roomStatusPanel = new RoomPanel(rooms, reservations, sqlConnection);
-        ReservationPanel reservationPanel = new ReservationPanel();
-        ReservationPanel.addDummyData(reservationPanel);
+        ReservationPanel reservationPanel = new ReservationPanel(sqlConnection);
+//        ReservationPanel.addDummyData(reservationPanel);
         RoomKeyPanel roomKeyPanel = new RoomKeyPanel(sqlConnection);
         CheckInOutPanel checkInOutPanel = new CheckInOutPanel(sqlConnection);
         BillCustomerPanel billCustomerPanel = new BillCustomerPanel();
