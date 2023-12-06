@@ -4,7 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class BookingRoomPopup extends JFrame {
     private final JTextField reservationIDField;
@@ -12,8 +14,10 @@ public class BookingRoomPopup extends JFrame {
     private String roomIDField;
     private final DatePicker checkInDatePanel;
     private final DatePicker checkOutDatePanel;
+    private SQLQueries sqlConnection;
 
-    public BookingRoomPopup(String roomNum) {
+    public BookingRoomPopup(String roomNum, SQLQueries sqlConnection) {
+        this.sqlConnection = sqlConnection;
         setLayout(new GridLayout(8, 2)); // Adjusted to include an additional row for the title
 
         // Create a JLabel for the title
@@ -80,6 +84,23 @@ public class BookingRoomPopup extends JFrame {
         // ((JComponent) getContentPane()).setBorder(BorderFactory.createTitledBorder("Book Room"));
     }
 
+    public BookingRoomPopup(String roomNum) {
+         JLabel reservationIDLabel = new JLabel("Reservation ID:");
+        reservationIDField = new JTextField();
+
+        JLabel customerLabel = new JLabel("Select Customer ID:");
+        customerComboBox = new JComboBox<>(new Integer[]{1, 2, 3}); // Add customer IDs as needed
+
+        JLabel roomIDLabel = new JLabel("Room ID: " + roomNum);
+        roomIDField = roomNum;
+
+        JLabel checkInLabel = new JLabel("Check-In Date (yyyy-MM-dd):");
+        checkInDatePanel = new DatePicker();
+
+        JLabel checkOutLabel = new JLabel("Check-Out Date (yyyy-MM-dd):");
+        checkOutDatePanel = new DatePicker();
+    }
+
     private class ReservationButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -97,6 +118,9 @@ public class BookingRoomPopup extends JFrame {
 
                 // Create a new Reservation object with the input data
                 Reservation newReservation = new Reservation(reservationID, selectedCustomerID, roomID, checkInDateLocal, checkOutDateLocal);
+
+                ArrayList<String> customer_info = sqlConnection.getCustomerInfo(String.valueOf(selectedCustomerID));
+                sqlConnection.addReservation(customer_info.get(0), customer_info.get(1), Date.valueOf(checkInDateLocal), Date.valueOf(checkOutDateLocal), String.valueOf(roomID));
 
                 // Perform operations with the new reservation (e.g., save to database)
                 // For demonstration purposes, you can print the new reservation details

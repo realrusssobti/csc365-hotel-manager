@@ -30,7 +30,7 @@ public class ReservationPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Display ReservationPopup as a popup
-                ReservationPopup reservationPopup = new ReservationPopup();
+                ReservationPopup reservationPopup = new ReservationPopup(sqlConnection);
                 reservationPopup.setSize(600, 400);
                 reservationPopup.setVisible(true);
 
