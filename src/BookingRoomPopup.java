@@ -121,7 +121,7 @@ public class BookingRoomPopup extends JFrame {
 
 
                 // Create a new Reservation object with the input data
-                Reservation newReservation = new Reservation(reservationID, selectedCustomerID, roomID, checkInDateLocal, checkOutDateLocal);
+                Reservation newReservation = new Reservation(reservationID, selectedCustomerID, roomID, checkInDateLocal, checkOutDateLocal, false);
 
                 ArrayList<String> customer_info = sqlConnection.getCustomerInfo(String.valueOf(selectedCustomerID));
                 sqlConnection.addReservation(Integer.toString(selectedCustomerID), sqlCheckInDate, sqlCheckOutDate, String.valueOf(roomID));

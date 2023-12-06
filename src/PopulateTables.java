@@ -130,25 +130,25 @@ public class PopulateTables {
         ArrayList<Reservation> reservations = new ArrayList<>();
 
         // customer 1 reserves room 101 from jan-1 to jan-30 in 2014
-        Reservation r1 = new Reservation(1, guest_ids.get((int) (Math.random() * guest_ids.size())), 101, LocalDate.of(2014, 1, 1), LocalDate.of(2014, 1, 30));
+        Reservation r1 = new Reservation(1, guest_ids.get((int) (Math.random() * guest_ids.size())), 101, LocalDate.of(2014, 1, 1), LocalDate.of(2014, 1, 30), false);
 
         // customer 2 reserves room 150 from jan-4 to feb-5 in 2014
-        Reservation r2 = new Reservation(2, guest_ids.get((int) (Math.random() * guest_ids.size())), 150, LocalDate.of(2014, 1, 4), LocalDate.of(2014, 2, 5));
+        Reservation r2 = new Reservation(2, guest_ids.get((int) (Math.random() * guest_ids.size())), 150, LocalDate.of(2014, 1, 4), LocalDate.of(2014, 2, 5), false);
 
         // customer 3 reserves room 190 from dec-1 to dec-26 in 2023 to cheat on his
         // wife during christmas
-        Reservation r3 = new Reservation(3, guest_ids.get((int) (Math.random() * guest_ids.size())), 190, LocalDate.of(2023, 12, 1), LocalDate.of(2023, 12, 26));
+        Reservation r3 = new Reservation(3, guest_ids.get((int) (Math.random() * guest_ids.size())), 190, LocalDate.of(2023, 12, 1), LocalDate.of(2023, 12, 26), false);
 
         // customer 3 also reserves room 191 from dec-2 to dec-27 in 2023 for the person
         // he is cheating with
-        Reservation r4 = new Reservation(4, guest_ids.get((int) (Math.random() * guest_ids.size())), 191, LocalDate.of(2023, 12, 2), LocalDate.of(2023, 12, 27));
+        Reservation r4 = new Reservation(4, guest_ids.get((int) (Math.random() * guest_ids.size())), 191, LocalDate.of(2023, 12, 2), LocalDate.of(2023, 12, 27), false);
 
         // customer 4 reserves room 192 from dec-1 to dec-26 in 2023 to spy on her
         // cheating husband after seeing his recent checkings history
-        Reservation r5 = new Reservation(5, guest_ids.get((int) (Math.random() * guest_ids.size())), 191, LocalDate.of(2023, 12, 1), LocalDate.of(2023, 12, 26));
+        Reservation r5 = new Reservation(5, guest_ids.get((int) (Math.random() * guest_ids.size())), 191, LocalDate.of(2023, 12, 1), LocalDate.of(2023, 12, 26), true);
 
         // customer 10 reserves room 120 from jun-5 to jul-30 in 2024 for summer break
-        Reservation r6 = new Reservation(6, guest_ids.get((int) (Math.random() * guest_ids.size())), 120, LocalDate.of(2024, 6, 5), LocalDate.of(2024, 7, 30));
+        Reservation r6 = new Reservation(6, guest_ids.get((int) (Math.random() * guest_ids.size())), 120, LocalDate.of(2024, 6, 5), LocalDate.of(2024, 7, 30), false);
 
         reservations.add(r1);
         reservations.add(r2);

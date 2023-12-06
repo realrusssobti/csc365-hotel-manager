@@ -9,13 +9,13 @@ public class Reservation {
     private LocalDate checkOutDate;
     private boolean checked_in;
 
-    public Reservation(int reservationID, int customerID, int roomNumber, LocalDate checkInDate, LocalDate checkOutDate) {
+    public Reservation(int reservationID, int customerID, int roomNumber, LocalDate checkInDate, LocalDate checkOutDate, boolean checkedIn) {
         this.reservationID = reservationID;
         this.customerID = customerID;
         this.roomNumber = roomNumber;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
-        this.checked_in = false;
+        this.checked_in = checkedIn;
 
     }
 

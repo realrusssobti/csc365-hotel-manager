@@ -135,9 +135,9 @@ public class SQLQueries {
         System.out.println("Getting all reservations");
         ArrayList<ArrayList<String>> table = new ArrayList<>();
         try {
-            String query =  "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType, B.BookingID, G.GuestID, R.RoomNumber " +
-                                "FROM Booking B, Guest G, Room R " +
-                                "WHERE B.GuestID = G.GuestID AND B.RoomNumber = R.RoomNumber;";
+            String query = "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType, B.BookingID, G.GuestID, R.RoomNumber,B.CheckedIn " +
+                    "FROM Booking B, Guest G, Room R " +
+                    "WHERE B.GuestID = G.GuestID AND B.RoomNumber = R.RoomNumber;";
             try (Statement statement = connection.createStatement()) {
                 ResultSet rs = statement.executeQuery(query);
                 while (rs.next()) {
@@ -157,18 +157,26 @@ public class SQLQueries {
                     String check_in_date   ; // declare string
                     if (check_in_obj == null) {
                          check_in_date = null;
+                    } else {
+                        check_in_date = check_in_obj.toString(); // convert to string
                     }
-                    else { check_in_date   = check_in_obj.toString(); // convert to string
-                    }
-                    
+
                     String room_type = rs.getString("RoomType");
-                    int booking_id_obj     = rs.getInt("BookingID"); 
-                    String bookingID      = Integer.toString(booking_id_obj); // convert to string
-                    int guest_id_obj     = rs.getInt("GuestID"); 
-                    String guestID      = Integer.toString(guest_id_obj); // convert to string
-                    int room_number_obj     = rs.getInt("RoomNumber"); 
-                    String room_number      = Integer.toString(room_number_obj); // convert to string
-                    Collections.addAll(tuple, first_name, last_name, check_in_date, check_out_date, room_type, bookingID, guestID, room_number);
+                    int booking_id_obj = rs.getInt("BookingID");
+                    String bookingID = Integer.toString(booking_id_obj); // convert to string
+                    int guest_id_obj = rs.getInt("GuestID");
+                    String guestID = Integer.toString(guest_id_obj); // convert to string
+                    int room_number_obj = rs.getInt("RoomNumber");
+                    String room_number = Integer.toString(room_number_obj); // convert to string
+                    boolean checkedIn = rs.getBoolean("CheckedIn");
+// turn boolean into string: 1 = true, 0 = false
+                    String checkedInString;
+                    if (checkedIn) {
+                        checkedInString = "1";
+                    } else {
+                        checkedInString = "0";
+                    }
+                    Collections.addAll(tuple, first_name, last_name, check_in_date, check_out_date, room_type, bookingID, guestID, room_number, checkedInString);
                     table.add(tuple); // add new tuple to table list
                     System.out.println("here");
                 }
@@ -231,13 +239,13 @@ public class SQLQueries {
         ArrayList<ArrayList<String>> table = new ArrayList<>();
         System.out.println("Made it Here");
         try {
-            String query =  "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType, B.BookingID, G.GuestID, R.RoomNumber " +
-                                "FROM Booking B, Guest G, Room R " +
-                                "WHERE B.GuestID = G.GuestID AND B.RoomNumber = R.RoomNumber " +
-                                "AND B.CheckInDate > ?";
+            String query = "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType, B.BookingID, G.GuestID, R.RoomNumber , B.CheckedIn " +
+                    "FROM Booking B, Guest G, Room R " +
+                    "WHERE B.GuestID = G.GuestID AND B.RoomNumber = R.RoomNumber " +
+                    "AND B.CheckInDate > ?";
 
-            try (PreparedStatement statement = connection.prepareStatement(query)) {
-                Date earliest_date_sql = Date.valueOf(earliest_date);
+            PreparedStatement statement = connection.prepareStatement(query);
+            Date earliest_date_sql = Date.valueOf(earliest_date);
                 System.out.println("Date: " + earliest_date_sql);
                 statement.setDate(1, earliest_date_sql);
                 ResultSet rs = statement.executeQuery();
@@ -261,22 +269,31 @@ public class SQLQueries {
                     String check_in_date   ; // declare string
                     if (check_in_obj == null) {
                          check_in_date = null;
-                    }
-                    else { check_in_date   = check_in_obj.toString(); // convert to string
+                    } else {
+                        check_in_date = check_in_obj.toString(); // convert to string
                     }
 
-                    String room_type        = rs.getString("RoomType");
-                    int booking_id_obj      = rs.getInt("BookingID"); 
-                    String bookingID        = Integer.toString(booking_id_obj); // convert to string
-                    int guest_id_obj        = rs.getInt("GuestID"); 
-                    String guestID          = Integer.toString(guest_id_obj); // convert to string
-                    int room_number_obj     = rs.getInt("RoomNumber"); 
-                    String room_number      = Integer.toString(room_number_obj); // convert to string
-                    
-                    Collections.addAll(tuple, first_name, last_name, check_in_date, check_out_date, room_type, bookingID, guestID, room_number);
+                    String room_type = rs.getString("RoomType");
+                    int booking_id_obj = rs.getInt("BookingID");
+                    String bookingID = Integer.toString(booking_id_obj); // convert to string
+                    int guest_id_obj = rs.getInt("GuestID");
+                    String guestID = Integer.toString(guest_id_obj); // convert to string
+                    int room_number_obj = rs.getInt("RoomNumber");
+                    String room_number = Integer.toString(room_number_obj); // convert to string
+                    boolean checkedIn = rs.getBoolean("CheckedIn");
+                    // turn boolean into string: 1 = true, 0 = false
+                    String checkedInString;
+                    if (checkedIn) {
+                        checkedInString = "1";
+                    } else {
+                        checkedInString = "0";
+                    }
+
+
+                    Collections.addAll(tuple, first_name, last_name, check_in_date, check_out_date, room_type, bookingID, guestID, room_number, checkedInString);
                     table.add(tuple); // add new tuple to table list
                 }
-            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

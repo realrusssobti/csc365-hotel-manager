@@ -202,8 +202,10 @@ public class MainFrame extends Frame {
             int room_number = Integer.parseInt(reservation_info.get(7));
             LocalDate checkin_date = LocalDate.parse(reservation_info.get(2), formatter);
             LocalDate checkout_date = LocalDate.parse(reservation_info.get(3), formatter);
+            // determine if checked in or not: if checkin date is before or equal to today and checkout date is after or equal to today
+            boolean checked_in = reservation_info.get(8).equals("1");
 
-            Reservation new_reservation = new Reservation(bookingID, guestID, room_number, checkin_date, checkout_date);
+            Reservation new_reservation = new Reservation(bookingID, guestID, room_number, checkin_date, checkout_date, checked_in);
             reservations.add(new_reservation);
         }
 

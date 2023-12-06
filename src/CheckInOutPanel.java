@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -45,6 +43,10 @@ public class CheckInOutPanel extends JPanel {
         sqlConnection.setReservationCheckOut(today, reservation.getReservationID());
         System.out.println("Checked out Room " + reservation.getRoomNumber());
         // Update room status or perform necessary actions
+
+        // Fetch updated data and recreate UI
+        updateReservations();
+        recreateUI();
     }
 
     private JButton createCheckInButton(Reservation reservation) {
@@ -60,22 +62,11 @@ public class CheckInOutPanel extends JPanel {
         LocalDate today = LocalDate.now();
         sqlConnection.setReservationCheckIn(today, reservation.getReservationID());
         System.out.println("Checked in Reservation " + reservation.getReservationID());
-        updateReservations();
-        // force the panel to update
-        rerender();
         // Update reservation status or perform necessary actions
-    }
 
-    private void rerender() {
-        JPanel checkedInPanel = createCheckedInPanel();
-        add(checkedInPanel, BorderLayout.NORTH);
-
-        JPanel checkInReservationPanel = createCheckInReservationPanel();
-        add(checkInReservationPanel, BorderLayout.CENTER);
-
-        // Add debug text at the bottom
-        JLabel debugLabel = new JLabel("Debug: " + reservationsToCheckIn.size() + " reservations to check in");
-        add(debugLabel, BorderLayout.SOUTH);
+        // Fetch updated data and recreate UI
+        updateReservations();
+        recreateUI();
     }
 
     private JPanel createCheckedInPanel() {
@@ -87,7 +78,6 @@ public class CheckInOutPanel extends JPanel {
                 JButton checkOutButton = createCheckOutButton(reservation);
                 checkedInPanel.add(roomLabel);
                 checkedInPanel.add(checkOutButton);
-
             }
         }
 
@@ -135,5 +125,22 @@ public class CheckInOutPanel extends JPanel {
 
         ArrayList<ArrayList<String>> reservationsInfo = sqlConnection.getReservationsBeyondDate(currentDate);
         this.reservationsToCheckIn = MainFrame.parseReservationObjects(reservationsInfo);
+    }
+
+    private void recreateUI() {
+        removeAll();
+
+        JPanel checkedInPanel = createCheckedInPanel();
+        add(checkedInPanel, BorderLayout.NORTH);
+
+        JPanel checkInReservationPanel = createCheckInReservationPanel();
+        add(checkInReservationPanel, BorderLayout.CENTER);
+
+        // Add debug text at the bottom
+        JLabel debugLabel = new JLabel("Debug: " + reservationsToCheckIn.size() + " reservations to check in");
+        add(debugLabel, BorderLayout.SOUTH);
+
+        revalidate();
+        repaint();
     }
 }
