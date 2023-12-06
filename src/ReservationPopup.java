@@ -128,7 +128,7 @@ public class ReservationPopup extends Frame {
                 // modify db to add the reservation
                 ArrayList<String> customer_info = sqlConnection.getCustomerInfo(String.valueOf(customerID));
 //                sqlConnection.addReservation(customer_info.get(0), customer_info.get(1), Date.valueOf(checkInDateLocal), Date.valueOf(checkOutDateLocal), String.valueOf(roomID));
-                sqlConnection.addReservation(String.valueOf(customerID), Date.valueOf(checkInDateLocal), Date.valueOf(checkOutDateLocal), String.valueOf(roomID));
+                sqlConnection.addReservation(String.valueOf(customerID), Date.valueOf(checkInDateLocal), Date.valueOf(checkOutDateLocal), String.valueOf(roomID), false);
                 // Perform operations with the new reservation (e.g., save to database)
                 // For demonstration purposes, you can print the new reservation details
                 System.out.println("New Reservation Details:");

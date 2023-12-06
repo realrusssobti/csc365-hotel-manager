@@ -288,7 +288,7 @@ public class SQLQueries {
     }
 
     public ArrayList<ArrayList<String>> getReservationsBeyondDate(LocalDate earliest_date) {
-        
+
         ArrayList<ArrayList<String>> table = new ArrayList<>();
         System.out.println("Made it Here");
         try {
@@ -299,53 +299,53 @@ public class SQLQueries {
 
             PreparedStatement statement = connection.prepareStatement(query);
             Date earliest_date_sql = Date.valueOf(earliest_date);
-                System.out.println("Date: " + earliest_date_sql);
-                statement.setDate(1, earliest_date_sql);
-                ResultSet rs = statement.executeQuery();
+            System.out.println("Date: " + earliest_date_sql);
+            statement.setDate(1, earliest_date_sql);
+            ResultSet rs = statement.executeQuery();
 
-                while (rs.next()) {
-                    System.out.println("here");
-                    ArrayList<String> tuple = new ArrayList<>();
+            while (rs.next()) {
+                System.out.println("here");
+                ArrayList<String> tuple = new ArrayList<>();
 
-                    String first_name       = rs.getString("FirstName");
-                    String last_name        = rs.getString("LastName");
+                String first_name = rs.getString("FirstName");
+                String last_name = rs.getString("LastName");
 
-                    Date check_out_obj      = rs.getDate("CheckOutDate");
-                    String check_out_date   ; // declare string
-                    if (check_out_obj == null) {
-                         check_out_date = new Date(0).toString();
-                    }
-                    else { check_out_date   = check_out_obj.toString(); // convert to string
-                         }
-
-                    Date check_in_obj      = rs.getDate("CheckInDate");
-                    String check_in_date   ; // declare string
-                    if (check_in_obj == null) {
-                         check_in_date = null;
-                    } else {
-                        check_in_date = check_in_obj.toString(); // convert to string
-                    }
-
-                    String room_type = rs.getString("RoomType");
-                    int booking_id_obj = rs.getInt("BookingID");
-                    String bookingID = Integer.toString(booking_id_obj); // convert to string
-                    int guest_id_obj = rs.getInt("GuestID");
-                    String guestID = Integer.toString(guest_id_obj); // convert to string
-                    int room_number_obj = rs.getInt("RoomNumber");
-                    String room_number = Integer.toString(room_number_obj); // convert to string
-                    boolean checkedIn = rs.getBoolean("CheckedIn");
-                    // turn boolean into string: 1 = true, 0 = false
-                    String checkedInString;
-                    if (checkedIn) {
-                        checkedInString = "1";
-                    } else {
-                        checkedInString = "0";
-                    }
-
-
-                    Collections.addAll(tuple, first_name, last_name, check_in_date, check_out_date, room_type, bookingID, guestID, room_number, checkedInString);
-                    table.add(tuple); // add new tuple to table list
+                Date check_out_obj = rs.getDate("CheckOutDate");
+                String check_out_date; // declare string
+                if (check_out_obj == null) {
+                    check_out_date = new Date(0).toString();
+                } else {
+                    check_out_date = check_out_obj.toString(); // convert to string
                 }
+
+                Date check_in_obj = rs.getDate("CheckInDate");
+                String check_in_date; // declare string
+                if (check_in_obj == null) {
+                    check_in_date = null;
+                } else {
+                    check_in_date = check_in_obj.toString(); // convert to string
+                }
+
+                String room_type = rs.getString("RoomType");
+                int booking_id_obj = rs.getInt("BookingID");
+                String bookingID = Integer.toString(booking_id_obj); // convert to string
+                int guest_id_obj = rs.getInt("GuestID");
+                String guestID = Integer.toString(guest_id_obj); // convert to string
+                int room_number_obj = rs.getInt("RoomNumber");
+                String room_number = Integer.toString(room_number_obj); // convert to string
+                boolean checkedIn = rs.getBoolean("CheckedIn");
+                // turn boolean into string: 1 = true, 0 = false
+                String checkedInString;
+                if (checkedIn) {
+                    checkedInString = "1";
+                } else {
+                    checkedInString = "0";
+                }
+
+
+                Collections.addAll(tuple, first_name, last_name, check_in_date, check_out_date, room_type, bookingID, guestID, room_number, checkedInString);
+                table.add(tuple); // add new tuple to table list
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -353,11 +353,79 @@ public class SQLQueries {
         return table;
     }
 
-    public void setReservationCheckIn(LocalDate check_in_date, int bookingID){
+    public ArrayList<ArrayList<String>> getActiveReservations(LocalDate today) {
+
+        ArrayList<ArrayList<String>> table = new ArrayList<>();
+        System.out.println("Made it Here");
         try {
-            String query = "UPDATE Booking SET CheckInDate = ? WHERE BookingID=?;";
+            String query = "SELECT G.FirstName, G.LastName, B.CheckInDate, B.CheckOutDate, R.RoomType, B.BookingID, G.GuestID, R.RoomNumber , B.CheckedIn " +
+                    "FROM Booking B, Guest G, Room R " +
+                    "WHERE B.GuestID = G.GuestID AND B.RoomNumber = R.RoomNumber " +
+                    "AND B.CheckInDate <= ? AND B.CheckOutDate > ?";
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            Date earliest_date_sql = Date.valueOf(today);
+            System.out.println("Date: " + earliest_date_sql);
+            statement.setDate(1, earliest_date_sql);
+            statement.setDate(2, earliest_date_sql);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                System.out.println("here");
+                ArrayList<String> tuple = new ArrayList<>();
+
+                String first_name = rs.getString("FirstName");
+                String last_name = rs.getString("LastName");
+
+                Date check_out_obj = rs.getDate("CheckOutDate");
+                String check_out_date; // declare string
+                if (check_out_obj == null) {
+                    check_out_date = new Date(0).toString();
+                } else {
+                    check_out_date = check_out_obj.toString(); // convert to string
+                }
+
+                Date check_in_obj = rs.getDate("CheckInDate");
+                String check_in_date; // declare string
+                if (check_in_obj == null) {
+                    check_in_date = null;
+                } else {
+                    check_in_date = check_in_obj.toString(); // convert to string
+                }
+
+                String room_type = rs.getString("RoomType");
+                int booking_id_obj = rs.getInt("BookingID");
+                String bookingID = Integer.toString(booking_id_obj); // convert to string
+                int guest_id_obj = rs.getInt("GuestID");
+                String guestID = Integer.toString(guest_id_obj); // convert to string
+                int room_number_obj = rs.getInt("RoomNumber");
+                String room_number = Integer.toString(room_number_obj); // convert to string
+                boolean checkedIn = rs.getBoolean("CheckedIn");
+                // turn boolean into string: 1 = true, 0 = false
+                String checkedInString;
+                if (checkedIn) {
+                    checkedInString = "1";
+                } else {
+                    checkedInString = "0";
+                }
+
+
+                Collections.addAll(tuple, first_name, last_name, check_in_date, check_out_date, room_type, bookingID, guestID, room_number, checkedInString);
+                table.add(tuple); // add new tuple to table list
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return table;
+    }
+
+    public void setReservationCheckIn(boolean check_in_date, int bookingID) {
+        try {
+            String query = "UPDATE Booking SET CheckedIn = ? WHERE BookingID=?;";
             try (PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setDate(1, Date.valueOf(check_in_date));
+                statement.setBoolean(1, check_in_date);
+                ;
                 statement.setInt(2, bookingID);
                 statement.executeUpdate();
             }
@@ -680,18 +748,19 @@ public class SQLQueries {
         return roomNumber;
     }
 
-    public static void addReservation(String GuestID, Date checkInDate, Date checkOutDate, String RoomNumber) {
+    public static void addReservation(String GuestID, Date checkInDate, Date checkOutDate, String RoomNumber, boolean checkedIn) {
         try {
             // Assuming you have tables Guest and Room in your database
             // Adjust the table and column names as per your database schema
 //            String bookingQuery = "INSERT INTO Booking (GuestID, CheckInDate, CheckOutDate, RoomNumber) VALUES (?, ?, ?, (SELECT RoomNumber FROM Room WHERE RoomType = ? LIMIT 1))";
-            String bookingQuery = "INSERT INTO Booking (GuestID, CheckInDate, CheckOutDate, RoomNumber) VALUES (?, ?, ?, ?)";
+            String bookingQuery = "INSERT INTO Booking (GuestID, CheckInDate, CheckOutDate, RoomNumber, CheckedIn) VALUES (?, ?, ?, ?,?)";
             // Insert reservation details
             try (PreparedStatement bookingStatement = connection.prepareStatement(bookingQuery)) {
                 bookingStatement.setString(1, GuestID);
                 bookingStatement.setDate(2, checkInDate);
                 bookingStatement.setDate(3, checkOutDate);
                 bookingStatement.setString(4, RoomNumber);
+                bookingStatement.setBoolean(5, checkedIn);
                 bookingStatement.executeUpdate();
             }
             System.out.println("Reservation added successfully.");

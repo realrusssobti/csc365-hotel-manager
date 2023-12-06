@@ -206,6 +206,7 @@ public class MainFrame extends Frame {
             boolean checked_in = reservation_info.get(8).equals("1");
 
             Reservation new_reservation = new Reservation(bookingID, guestID, room_number, checkin_date, checkout_date, checked_in);
+            System.out.println(checked_in);
             reservations.add(new_reservation);
         }
 

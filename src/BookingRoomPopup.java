@@ -124,7 +124,7 @@ public class BookingRoomPopup extends JFrame {
                 Reservation newReservation = new Reservation(reservationID, selectedCustomerID, roomID, checkInDateLocal, checkOutDateLocal, false);
 
                 ArrayList<String> customer_info = sqlConnection.getCustomerInfo(String.valueOf(selectedCustomerID));
-                sqlConnection.addReservation(Integer.toString(selectedCustomerID), sqlCheckInDate, sqlCheckOutDate, String.valueOf(roomID));
+                sqlConnection.addReservation(Integer.toString(selectedCustomerID), sqlCheckInDate, sqlCheckOutDate, String.valueOf(roomID), false);
 
                 // Perform operations with the new reservation (e.g., save to database)
                 // For demonstration purposes, you can print the new reservation details

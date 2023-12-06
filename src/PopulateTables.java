@@ -308,7 +308,7 @@ public class PopulateTables {
             // find an eligible room
             int roomNumber = SQLQueries.findEligibleRoom(roomType, checkInDateSQL, checkOutDateSQL);
 
-            SQLQueries.addReservation(customer_id, checkInDateSQL, checkOutDateSQL, String.valueOf(roomNumber));
+            SQLQueries.addReservation(customer_id, checkInDateSQL, checkOutDateSQL, String.valueOf(roomNumber), reservation.getCheckedIn());
 
         } else {
             System.out.println("Customer does not exist");

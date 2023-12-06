@@ -13,7 +13,7 @@ public class CheckInOutPanel extends JPanel {
 
         LocalDate currentDate = LocalDate.now();
 
-        ArrayList<ArrayList<String>> reservationsInfo = sqlConnection.getReservationsBeyondDate(currentDate);
+        ArrayList<ArrayList<String>> reservationsInfo = sqlConnection.getActiveReservations(currentDate);
         this.reservationsToCheckIn = MainFrame.parseReservationObjects(reservationsInfo);
 
         setLayout(new BorderLayout());
@@ -59,8 +59,7 @@ public class CheckInOutPanel extends JPanel {
         reservation.setCheckInDate(LocalDate.now());
         reservation.setCheckedIn(true);
 
-        LocalDate today = LocalDate.now();
-        sqlConnection.setReservationCheckIn(today, reservation.getReservationID());
+        sqlConnection.setReservationCheckIn(reservation.getCheckedIn(), reservation.getReservationID());
         System.out.println("Checked in Reservation " + reservation.getReservationID());
         // Update reservation status or perform necessary actions
 
