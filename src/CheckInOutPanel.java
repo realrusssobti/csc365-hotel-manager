@@ -65,7 +65,7 @@ public class CheckInOutPanel extends Panel {
         Panel checkedInPanel = new Panel(new GridLayout(0, 2));
 
         for (Reservation reservation : reservations_to_checkin) {
-            if (reservation.getCheckInDate() != null && reservation.getCheckOutDate() == null) {
+            if (reservation.getCheckedIn() == true) {
                 Label roomLabel = new Label("Room " + reservation.getRoomNumber());
                 Button checkOutButton = createCheckOutButton(reservation);
 
