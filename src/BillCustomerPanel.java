@@ -2,12 +2,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class BillCustomerPanel extends Panel {
     private final Choice customerChoice;
     private final Choice reservationChoice;
+    private SQLQueries sqlConnection;
 
-    public BillCustomerPanel() {
+    public BillCustomerPanel(SQLQueries sqlConnection) {
+        this.sqlConnection = sqlConnection;
         // Set the layout manager to GridBagLayout
         setLayout(new GridBagLayout());
 
@@ -69,9 +74,16 @@ public class BillCustomerPanel extends Panel {
     private Choice createCustomerChoice() {
         Choice choice = new Choice();
         // Add dummy customer names for demonstration
-        choice.add("John Doe");
-        choice.add("Jane Smith");
-        choice.add("Bob Johnson");
+
+        ArrayList<ArrayList<String>> customers_info = sqlConnection.getCustomersAll();
+
+        for (int i=0; i<customers_info.size(); i++){
+            ArrayList<String> customer = customers_info.get(i);
+            choice.add(customer.get(6));
+        }
+        // choice.add("John Doe");
+        // choice.add("Jane Smith");
+        // choice.add("Bob Johnson");
         // Add more customers as needed
         return choice;
     }
@@ -89,14 +101,29 @@ public class BillCustomerPanel extends Panel {
     private class GenerateBillButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            int total_bill = 0;
             String selectedCustomer = customerChoice.getSelectedItem();
             String selectedReservation = reservationChoice.getSelectedItem();
 
+            LocalDate today = LocalDate.now();
+            ArrayList<ArrayList<String>> reservationsForBilling = sqlConnection.getReservationByCustomer_Billing(Integer.parseInt(selectedCustomer), Date.valueOf(today));
+
+            for (int i=0; i<reservationsForBilling.size(); i++){
+                ArrayList<String> curr_reservation = reservationsForBilling.get(i);
+
+                //get room price
+                total_bill += Integer.parseInt(curr_reservation.get(8));
+
+            }
+
+            String fullName = reservationsForBilling.get(0).get(0) + " " + reservationsForBilling.get(0).get(1);
+
+
             // Here, you can perform any additional logic to generate the bill
             // For simplicity, let's just display the information for now
-            showMessageDialog("Generating bill for Customer: " + selectedCustomer
+            showMessageDialog("Generating bill for Customer: " + fullName 
                     + "\nReservation Number: " + selectedReservation
-                    + "\nBill Generated!");
+                    + "\nTotal Bill: " + total_bill);
         }
     }
 
@@ -104,10 +131,10 @@ public class BillCustomerPanel extends Panel {
         JOptionPane.showMessageDialog(this, message, "Message", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public static void main(String[] args) {
-        Frame frame = new Frame("Bill Customer Panel");
-        frame.add(new BillCustomerPanel());
-        frame.setSize(300, 250);
-        frame.setVisible(true);
-    }
+    // public static void main(String[] args) {
+    //     Frame frame = new Frame("Bill Customer Panel");
+    //     frame.add(new BillCustomerPanel());
+    //     frame.setSize(300, 250);
+    //     frame.setVisible(true);
+    // }
 }
